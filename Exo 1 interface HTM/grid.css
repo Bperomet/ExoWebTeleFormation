@@ -1,0 +1,70 @@
+body {
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background-color: rgb(224, 220, 220);
+    display: grid;
+    grid-template-areas: 
+    "h"
+    "m"
+    "f";
+    grid-template-rows: 100px 1fr 50px;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+}
+header{
+    grid-area:  h;
+    background-color: rgb(255, 94, 0);
+    position: relative;
+
+}
+header h1{
+    position: absolute;
+    margin: 0;
+    left: 40%;
+    top: 30%;
+    color: white;
+}
+#mid{
+    grid-area: m;
+    display: grid;
+    grid-template-areas: 
+    "bg g ml d bd";
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+}
+#box1{
+    grid-area: g;
+}
+#box2{
+    grid-area: ml;
+}
+#box3{
+    grid-area: d;
+}
+#blancG{
+    grid-area: bg;
+}
+#blancD{
+    grid-area: bd;
+}
+#mid div img{
+    width: 100%;
+    height: 40%;
+}
+#mid #box1, #box2,#box3{
+    background-color: rgb(250, 250, 250);
+    text-align: justify;
+    margin: 3% 2%;
+}
+#mid div h2{
+    color: rgb(255, 94, 0);
+    font-weight: bold;
+}
+#mid div h2,p{
+    padding: 5px 15px;
+}
+footer{
+    grid-area: f;
+    background-color: rgb(255, 94, 0);
+}
