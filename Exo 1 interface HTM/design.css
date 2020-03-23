@@ -20,9 +20,7 @@ header{
     text-align: center;
 }
 header h1{
-
     color: white;
-  
 }
 #mid{
     grid-area: m;
@@ -40,7 +38,6 @@ header h1{
     margin: 2% 1%;
     flex-direction: column;
 }
-
 #mid div h2{
     color: rgb(255, 94, 0);
     font-weight: bold;
