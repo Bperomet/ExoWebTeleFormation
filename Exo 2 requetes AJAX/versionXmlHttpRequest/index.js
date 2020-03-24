@@ -5,21 +5,16 @@ let sauvJson = 'sauvGame.json';
 let b ='https://arfp.eu/dataset/cards.json';
 let request = new XMLHttpRequest();
 request.open('GET',b,true);
-//let reponse = JSON.parse(request);
-
 request.responseType ='json';
 
 if (request != null) {
-
     request.onload = function(){
     let playeur = request.response;
-   // const obj = JSON.parse(playeur);
     fillKeyTab(playeur);
 }
 
 request.send(null);
 }
-
 
 function fillKeyTab(jsonObj){
     let obj = Object.keys(jsonObj[0]);
