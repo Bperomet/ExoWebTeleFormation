@@ -3,24 +3,107 @@ body {
     padding:0;
     font-family: sans-serif;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: rgb(44, 44, 44);
 }
-
+#zoneTab{
+    display: flex;
+    align-self: center;
+    justify-content: center;
+}
 table{
-
+    margin-top: 1%;
     background-color: rgb(230, 230, 230);
     border-collapse: collapse;
     width: 50%;
+    border: 3px solid rgb(0, 0, 0);
 
 }
-tr, th, td{
-    text-align: left;
-    border: 2px solid rgb(150, 28, 28);
+tr th{
+    text-align: center;
+    border: 1px solid rgb(0, 0, 0);
 
 }
 td{
+    text-align: left;
+    padding-left: 1%;
+}
+table tr:nth-child(odd){
+    background-color:rgb(148, 148, 148);
+}
+
+#zoneCarte{
+display: flex;
+flex-direction: row;
+
+}
+.carte{
+    margin: 2%;
+    width: 22%;
+    height: 40%;
+    margin-bottom: 0%;
+    border: 3px inset rgb(75, 37, 11);
+    border-radius: 5%;
+    color: white;
+    background-color: black;
+    display: grid;
+    grid-template-areas: 
+    "h h h"
+    "i i d"
+    "i i d"
+    "b b b";
+    grid-template-rows: 60px 2fr 2fr 50px;
+    grid-template-columns: 2fr 2fr 2fr;
+}
+.carte img{
+    grid-area: i;
+    width: 100%;
     
+}
+.stats{
+    grid-area: d;
+}
+.stats h3,p{
+    font-size: 0.8em;
+    width: 100%;
+    grid-area: d;
+    margin: 0%;
+    text-align: center;
+}
+.btm{
+    grid-area: b;
+}
+
+.carteTop{
+    border-radius: 5%;
+
+    grid-area: h;
+    display: flex;
+    background-color: rgb(0, 66, 14);
+    align-items: center;
+
+}
+.topInfo p,h3{
+    text-align: left;
+    margin: 0;
+    font-size: 0.8em;
+
+}
+.topInfo p{
+
+    font-size: 0.7em;
+
+}
+.carteTop .lvl{
+    width: 25%;
+    font-size: 1.5em;
+    font-size: bold;
+}
+.pPower{
+    color: blueviolet;
+}
+.pAttack{
+    color: red;
+}
+.pDefence{
+    color: royalblue;
 }
