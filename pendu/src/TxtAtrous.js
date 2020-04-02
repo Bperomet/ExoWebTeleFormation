@@ -1,28 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 
-let tabStr = ['DICTIONNAIRE','CHAT','BROCOLI'];
-let rdm = parseInt(Math.random()*(tabStr.length-0)+0);
-let tabWord = tabStr[rdm].split('');
-let tab = addTab(tabWord);
+const Td = ({ value,feedBack})=>( <td >{feedBack==='hidden'? "_": value}</td>);
 
-
-function addTab(tabWord){
-    let tab =[];
-    tabWord.forEach(element => {
-        tab.push({etat: "hidden",value: element});
-    });
-    return tab;
-}
-
-const Td = ({ value,feedBack})=>( <td >{feedBack==='hidden'? " ": value}</td>);
-
-function TextVide() {
+function TextVide({tableau}) {
   return (
     <table>
         <thead >
             <tr>
-            {tab.map((elmt,index )=>(<Td key={index} value={elmt.value} feedBack ={ elmt.etat }/>))}
+            {tableau.map((elmt,index )=>(<Td key={index} value={elmt.value} feedBack ={ elmt.etat }/>))}
             </tr>
         </thead>
     </table>

@@ -13,3 +13,23 @@ table{
   align-items: center;
   justify-content: center;
 }
+
+.zoneBtn{
+  margin: 5%;
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+}
+.zoneBtn button{
+    color:rgb(17, 0, 255);
+    margin: 2px;
+    
+}
+
+.cliquer{
+  background-color: grey;
+}
+.nclique{
+  background-color: whitesmoke;
+}

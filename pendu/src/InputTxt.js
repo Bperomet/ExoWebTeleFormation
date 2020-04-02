@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
 
-function Input(onClick) {
+
+function Input({value, onClick,classBtn}) {
   return (
-<div>
-  <input type="text"></input>
-</div>
+  <button className = {classBtn}  onClick= {function(e) {onClick(value,e)}}  value= {value}>{value}</button>
   );
 }
 
