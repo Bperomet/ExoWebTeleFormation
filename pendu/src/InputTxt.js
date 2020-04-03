@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 
 
-function Input({value, onClick,classBtn}) {
+function Input({value, onClick, classBtn}) {
   return (
-  <button className = {classBtn}  onClick= {function(e) {onClick(value,e)}}  value= {value}>{value}</button>
+  <button  className = {classBtn}  onClick= {function(e) {onClick(value,e)}}  value= {value}>{value}</button>
   );
 }
 

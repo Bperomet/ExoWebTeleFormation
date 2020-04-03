@@ -11,10 +11,17 @@ export default class App extends Component{
     
     this.state ={
       tab: this.tabCreat(),
-      alph: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(''),
+      alph: this.addClass(),
       faute: 0,
-      btnClass: "nclique"
     }
+  }
+  addClass(){
+    let tbl = [];
+    let alphab = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(let a of alphab){
+      tbl.push({lettre: a ,value:"nclique"});
+    }
+    return tbl;
   }
 
   tabCreat(){
@@ -33,13 +40,21 @@ export default class App extends Component{
 
 
   EventInput = (ltr,e)=>{
-    e.target.state.btnClass = 'cliquer'
-    //e.target.className  = 'cliquer';
+
+    var alphTab = this.state.alph;
+    for(let al of alphTab){
+      if(al.lettre === ltr){
+        al.value = "cliquer";
+      }
+    }
+    this.setState({alph: alphTab});
+    console.log(this.state.alph);
     var fin = true;
     var valide = false;
     var a = this.state.tab;
 
     for(let c of a){
+      
       if(c.etat ==="hidden" && c.value ===ltr){
         c.etat="trouver"
         valide = true;
@@ -58,7 +73,7 @@ export default class App extends Component{
         if(window.confirm("Perdu! Voulez-vous rejouer?")){
 
           console.log(this.state.btnClass);
-          this.setState( {tab: this.tabCreat(),faute: 0, btnClass: "nclique"});
+          this.setState( {tab: this.tabCreat(),faute: 0, alph: this.addClass()});
           console.log(this.state.btnClass);
         }
       }
@@ -66,7 +81,7 @@ export default class App extends Component{
 
     if(fin){
       if(window.confirm("Gagnier! Voulez-vous rejouer?")){
-        this.setState( {tab: this.tabCreat(),faute: 0, btnClass: "nclique"});
+        this.setState( {tab: this.tabCreat(),faute: 0, alph: this.addClass()});
       }
     }
 
@@ -80,7 +95,7 @@ export default class App extends Component{
         <h4>Faute = {this.state.faute}</h4>
         <div className ='zoneBtn'>
         {this.state.alph.map((elemt,index)=>(
-          <Input key={index}  value={elemt} onClick= {this.EventInput} classBtn ={this.state.btnClass}/>
+          <Input key={index}  value={elemt.lettre} onClick= {this.EventInput} classBtn ={elemt.value}/>
         ))}
         </div>
 
