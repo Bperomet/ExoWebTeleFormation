@@ -128,6 +128,8 @@ app.set('port',9000);
 console.log('Le serveur ecoute sur le port ',app.get('port'));
 app.listen(app.get('port'));
 
+//node index.js
+
 //Dans cmd pour le GET   CURL -X GET "localhost:9000/database" [{"id":"1","firstname":"FirstName","lastname":"LastName"}]
 
 //Pour le add  curl -d {\"id\":\"2\",\"firstname\":\"Lewis\",\"lastname\":\"Carroll\"} -H "Content-Type: application/json" -X POST "http://localhost:9000/add"
