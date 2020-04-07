@@ -26,24 +26,27 @@ db.serialize(function(){
 });
 
 
-
 const app = express();
+
+
 app.use(express.json());//Indique que ça va etre du format json
 
 //Get All
 app.get('/database', function (req, res) {
     db.all('SELECT ID, FIRSTNAME, LASTNAME FROM datas', function (err, rows) {
-        var output = []
+        var output = [];
         if (err) {
           console.log(err)
-        } else {
+        } 
+        else {
           if (rows.length === 0) {
             res.send('Empty database')
-          } else {
+          } 
+          else {
             rows.forEach(function (row) {
-              output.push({ id: row.id, firstname: row.firstname, lastname: row.lastname })
-            })
-            res.send(output)
+              output.push({ id: row.id, firstname: row.firstname, lastname: row.lastname });
+            });
+            res.send(output);
           }
         }
       });
@@ -51,9 +54,9 @@ app.get('/database', function (req, res) {
 
 //Methode POST pour add
  app.post('/add', function (req, res) {
-    var IdValue = req.body.id
-    var FirstNameValue = req.body.firstname
-    var LastNameValue = req.body.lastname
+    var IdValue = req.body.id;
+    var FirstNameValue = req.body.firstname;
+    var LastNameValue = req.body.lastname;
     if ((IdValue !== '' && IdValue!== undefined)) {
       db.each('SELECT ID FROM datas WHERE id=? UNION ALL SELECT NULL LIMIT 1', IdValue, function (err, row) {
         if (err) {
@@ -63,41 +66,47 @@ app.get('/database', function (req, res) {
           db.run('INSERT INTO datas VALUES (?, ?, ?) ', IdValue, FirstNameValue, LastNameValue, function (err, row) {
             if (err) {
               console.log(err)
-            } else {
+            } 
+            else {
               res.send('Success')
             }
-          })
-        } else {
+          });
+        } 
+        else {
           res.send('ID already exists')
         }
-      })
-    } else {
+      });
+    } 
+    else {
       res.send('Unable to add data. Check syntax.')
     }
-  })
-  
+  });
+
 //Methode POST pour delete
   app.post('/delete', function (req, res) {
-    var IdValue = req.body.id
+    var IdValue = req.body.id;
     if (IdValue !== '' && IdValue !== undefined) {
       db.each('SELECT ID FROM datas WHERE id=? UNION ALL SELECT NULL LIMIT 1', IdValue, function (err, row) {
         if (err) {
-          console.log(err)
+          console.log(err);
         }
         if (row.id === null) {
-          res.send('You should specify an ID')
-        } else {
+          res.send('You should specify an ID');
+        } 
+        else {
           db.run('DELETE FROM datas WHERE id=?', IdValue, function (err) {
             if (err) {
-              console.log(err)
-            } else {
-              res.send('Success')
+              console.log(err);
+            } 
+            else {
+              res.send('Success');
             }
           })
         }
       })
-    } else {
-      res.send('Unable to delete data. Check syntax')
+    } 
+    else {
+      res.send('Unable to delete data. Check syntax');
     }
   })
 
