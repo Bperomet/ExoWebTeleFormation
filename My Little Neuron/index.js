@@ -1,7 +1,8 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('MyDB.db');
+const db = new sqlite3.Database('MyDB.db');//Pour obtenir des informations sur l'exécution des requêtes SQL (utile pour le débug)
 
+//Creation de la table si elle n'existe pas
 db.serialize(function(){
     db.run('CREATE TABLE IF NOT EXISTS datas (id TEXT, firstname TEXT, lastname TEXT)');
     db.all('SELECT ID, FIRSTNAME, LASTNAME FROM datas', function (err, row) {
@@ -27,8 +28,9 @@ db.serialize(function(){
 
 
 const app = express();
-app.use(express.json());
+app.use(express.json());//Indique que ça va etre du format json
 
+//Get All
 app.get('/database', function (req, res) {
     db.all('SELECT ID, FIRSTNAME, LASTNAME FROM datas', function (err, rows) {
         var output = []
@@ -47,6 +49,7 @@ app.get('/database', function (req, res) {
       });
  });
 
+//Methode POST pour add
  app.post('/add', function (req, res) {
     var IdValue = req.body.id
     var FirstNameValue = req.body.firstname
@@ -72,7 +75,8 @@ app.get('/database', function (req, res) {
       res.send('Unable to add data. Check syntax.')
     }
   })
-
+  
+//Methode POST pour delete
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id
     if (IdValue !== '' && IdValue !== undefined) {
