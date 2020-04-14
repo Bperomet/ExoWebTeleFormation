@@ -35,11 +35,11 @@ app.get('/database', function (req, res) {
     db.all('SELECT ID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD, DESCRIPTION, ROLE FROM userData', function (err, rows) {
         var output = [];
         if (err) {
-          console.log(err)
+          console.log(err);
         } 
         else {
           if (rows.length === 0) {
-            res.send('Empty database')
+            res.send('Empty database');
           } 
           else {
             rows.forEach(function (row) {
@@ -64,21 +64,21 @@ app.get('/database', function (req, res) {
 
     db.each('SELECT EMAIL FROM userData WHERE email=? UNION ALL SELECT NULL LIMIT 1', EmailValue, function (err, row) {
     if (err) {
-        console.log(err)
+        console.log(err);
     }
     if (row.email === null) {
         db.run('INSERT INTO userData VALUES (?, ?, ?, ?, ?, ?) ', 
         FirstNameValue, LastNameValue, EmailValue, PasswordValue, DescriptionValue, RoleValue, function (err, row) {
         if (err) {
-            console.log(err)
+            console.log(err);
         } 
         else {
-            res.send('Success')
+            res.send('Success');
         }
         });
     } 
     else {
-        res.send('Email already exists')
+        res.send('Email already exists');
     }
     });
 
