@@ -1,6 +1,20 @@
+
+
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('AuthDB.db');
+
+function User(id,surname,lastname,email,password,descrip,role){
+    this.idUser = id||'';
+    this.surnameUser = surname||'';
+    this.lastnameUser = lastname||'';
+    this.emailUser = email||'';
+    this.passwordUser = password||'';
+    this.descriptionUser = descrip||'';
+    this.roleUser = role||'Usager';
+}
+
+let user;
 
 db.serialize(function(){
 
@@ -12,7 +26,7 @@ db.serialize(function(){
         }
         else{
             if(row.length === 0){
-                var stmt = db.prepare('INSERT INTO userData VALUES ( ?, ?, ?, ?, ?, ?)');
+                var stmt = db.prepare('INSERT INTO userData (firstname, lastname, email, password, description, role) VALUES (?, ?, ?, ?, ?, ?)');
                 var obj = [{ firstname:'FirstName', lastname:'LastName', email:'email@email.ml', 
                     password:'Password', description:'Description', role:'Usager'}];
                 for(let i in obj){
@@ -24,13 +38,12 @@ db.serialize(function(){
             else{
                 console.log('Base de donnée éxistante.');
             }
+
         }
     });
 });
 
-const app = express();
-app.use(express.json());
-
+const GetData = (app)=>{
 app.get('/database', function (req, res) {
     db.all('SELECT ID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD, DESCRIPTION, ROLE FROM userData', function (err, rows) {
         var output = [];
@@ -52,9 +65,9 @@ app.get('/database', function (req, res) {
         }
       });
  });
-
- app.post('/add', function (req, res) {
-   //var IdValue = req.body.id;
+}
+const AddData = (app)=>{
+app.post('/add', function (req, res) {
    var FirstNameValue = req.body.firstname;
    var LastNameValue = req.body.lastname;
    var EmailValue = req.body.email;
@@ -62,51 +75,97 @@ app.get('/database', function (req, res) {
    var DescriptionValue = req.body.description;
    var RoleValue = req.body.role;
 
-    db.each('SELECT EMAIL FROM userData WHERE email=? UNION ALL SELECT NULL LIMIT 1', EmailValue, function (err, row) {
+  db.each('SELECT EMAIL FROM userData WHERE email=? UNION ALL SELECT NULL LIMIT 1', EmailValue, function (err, row) {
     if (err) {
         console.log(err);
     }
     if (row.email === null) {
-        db.run('INSERT INTO userData VALUES (?, ?, ?, ?, ?, ?) ', 
-        FirstNameValue, LastNameValue, EmailValue, PasswordValue, DescriptionValue, RoleValue, function (err, row) {
+      db.run('INSERT INTO userData (firstname, lastname, email, password, description, role) VALUES (?, ?, ?, ?, ?, ?)', 
+      FirstNameValue, LastNameValue, EmailValue, PasswordValue, DescriptionValue, RoleValue, function (err, row) {
         if (err) {
             console.log(err);
         } 
         else {
             res.send('Success');
         }
-        });
+      });
+    }
+    else{
+      res.send('Email deja existant')
+    }
+  });
+ });
+}
+const TryConect =(app)=>{
+ app.post('/connection', function (req, res) {
+    var EmailValue = req.body.email;
+    var PasswordValue = req.body.password;
+ 
+     db.each('SELECT ID FROM userData WHERE email=? AND password=? UNION ALL SELECT NULL LIMIT 1', EmailValue, PasswordValue, function (err, row) {
+     if (err) {
+         console.log(err);
+     }
+     //si ça matche
+     if (row.id != null) {
+        user = new User(row.id,row.surname,row.lastname,row.email,row.password,row.descrip,row.role);
+
+     //   app.set('view engine','ejs');
+        if(user.roleUser==='administrateur'){
+         // res.render('/AdminPage');
+        //  res.send('Vous etes dans la zone de gestion faite pour les administrateur!');
+          
+        }
+        else{
+         // res.render('index.html');
+
+         // res.send('Vous etes dans la zone faite pour les utilisateur!');
+        }
+     } 
+     else {
+         res.send('Identifiants non existant');
+     }
+     });
+ 
+  });
+}
+const BonusDelete =(app)=>{
+  app.post('/delete', function (req, res) {
+    var IdValue = req.body.id;
+    //verrif
+    if (IdValue !== '' && IdValue !== undefined) {
+        //verrif si l'id match
+      db.each('SELECT ID FROM userData WHERE id=? UNION ALL SELECT NULL LIMIT 1', IdValue, function (err, row) {
+        if (err) {
+          console.log(err);
+        }
+        if (row.id === null) {
+          res.send('You should specify an ID');
+        } 
+        else {
+            //lance la requete
+          db.run('DELETE FROM userData WHERE id=?', IdValue, function (err) {
+            if (err) {
+              console.log(err);
+            } 
+            else {
+              res.send('Success');
+            }
+          })
+        }
+      });
     } 
     else {
-        res.send('Email already exists');
+      res.send('Unable to delete data. Check syntax');
     }
-    });
-
- });
-
-app.set('port',9500);
-console.log('Le serveur ecoute sur le port ',app.get('port'));
-app.listen(app.get('port'));
-//curl -d {\"firstname\":\"Lewis\",\"lastname\":\"Carroll\",\"email\":\"test@email.fr\",\"password\":\"azerty\",\"description\":\"je suis une description\",\"role\":\"Usager\"} -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
+  });
+}
+  module.exports = {
+    get:GetData,
+    add:AddData,
+    connexion: TryConect,
+    delete: BonusDelete
+  };
 /*
-curl -d 
-{
-\"firstname
-\":\"
-Lewis\",
-\"lastname
-\":\"
-Carroll\",
-\"email
-\":\"
-test@email.fr\",
-\"password
-\":\"
-azerty\",
-\"description
-\":\"
-je suis une description\",
-\"role
-\":\"
-Usager\"} -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
+curl -d "{\"firstname\" : \"Lewis\",\"lastname\" : \"Carroll\",\"email\" : \"test@email.fr\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
+curl -d "{\"email\" : \"test@email.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 */
