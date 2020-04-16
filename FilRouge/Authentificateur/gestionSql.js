@@ -30,7 +30,6 @@ function CreatDB(){
 }
 
 function Select(EmailValue,PasswordValue,callback){
-
     db.get('SELECT * From userData WHERE email=? AND password=?', EmailValue, PasswordValue, function (err, row) {
         if (err) {
             console.log(err);
@@ -38,7 +37,7 @@ function Select(EmailValue,PasswordValue,callback){
         else{
         }
             if (row != null) {
-                callback(row);
+                callback(JSON.stringify(row));
             }
             else {
                 callback(null);
@@ -61,29 +60,29 @@ function SelectAll(callback){
                 email: row.email, password: row.password, 
                 description: row.description, role: row.role});
             });
-            callback(output);
+            callback(JSON.stringify(output));
             }
         }
     });
 }
 
-function Create(FirstNameValue, LastNameValue, EmailValue, PasswordValue, DescriptionValue, RoleValue, callback){
+function Create(user, callback){
 
-    db.get('SELECT EMAIL FROM userData WHERE email=?', EmailValue, function (err, row) {
+    db.get('SELECT EMAIL FROM userData WHERE email=?', user.emailUser, function (err, row) {
         if (err) {
             console.log(err);
         }
         
         if (row === undefined) {
           db.run('INSERT INTO userData (firstname, lastname, email, password, description, role) VALUES (?, ?, ?, ?, ?, ?)', 
-          FirstNameValue, LastNameValue, EmailValue, PasswordValue, DescriptionValue, RoleValue, function (err) {
+          user.firstname, user.lastname, user.email, user.password, user.description, user.role, function (err) {
             if (err) {
                 console.log(err);
             } 
             else {
 
-                //Probleme la avr line est undefined
-                callback(true);
+                user.id = this.lastID;
+                callback(JSON.stringify(user));
             }
           });
         }
@@ -102,8 +101,7 @@ function Update(user,callback){
             callback(null);
         } 
         else {
-
-            callback(true);
+            callback(JSON.stringify(user));
         }
     });
 }

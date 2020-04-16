@@ -1,13 +1,14 @@
 const sqlModule = require('./gestionSql');
+let user = null;
 
 function User(id,surname,lastname,email,password,descrip,role){
-  this.idUser = id||'';
-  this.surnameUser = surname||'';
-  this.lastnameUser = lastname||'';
-  this.emailUser = email||'';
-  this.passwordUser = password||'';
-  this.descriptionUser = descrip||'';
-  this.roleUser = role||'Usager';
+  this.id = id||'';
+  this.firstname = surname||'';
+  this.lastname = lastname||'';
+  this.email = email||'';
+  this.password = password||'';
+  this.description = descrip||'';
+  this.role = role||'Usager';
 }
 
 const InitialiseDB = ()=>{
@@ -31,7 +32,9 @@ app.post('/add', function (req, res) {
    var DescriptionValue = req.body.description;
    var RoleValue = req.body.role;
 
-  sqlModule.add(FirstNameValue, LastNameValue, EmailValue, PasswordValue, DescriptionValue, RoleValue, function(callback){
+   user = new User('',FirstNameValue,LastNameValue,EmailValue,PasswordValue,DescriptionValue,RoleValue);
+
+  sqlModule.add( user, function(callback){
     if (callback !== null) {
       console.log(callback);
     }
@@ -48,23 +51,16 @@ const TryConect =(app)=>{
     var PasswordValue = req.body.password;
 
     sqlModule.get(EmailValue,PasswordValue, function(user){
-      console.log(user);
+      
       if(user != null){
         //console.log(user);
-//Test Update
-        user ={
-          id: user.id,
-          firstname: user.firstname,
-          lastname: "bambam",
-          email: "email@new.ml",
-          password: user.password,
-          description: user.description,
-          role: "Admine", 
-        };
-
+        //Test Update
+        user = JSON.parse(user);
+        user.firstname = "zebre";
+        console.log(user);
         sqlModule.update(user,function(callback){
           if (callback !== null) {
-            console.log('User modifier');
+            console.log(callback);
           }
           else{
             console.log(callback +" pas update");
@@ -75,7 +71,7 @@ const TryConect =(app)=>{
   });
 };
 
-const BonusDelete =(app)=>{
+const BonusDelete = (app)=>{
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
     sqlModule.remove(IdValue,function(callback){
@@ -89,13 +85,13 @@ const BonusDelete =(app)=>{
   });
 };
 
-const BonusUpdate =(app)=>{
+const BonusUpdate = (app)=>{
   app.post('/update', function (req, res) {
     var IdValue = req.body.id;
     
     sqlModule.update(user,function(callback){
-      if (callback != null) {
-        console.log('User modifier');
+      if (callback !== null) {
+        console.log(callback);
       }
       else{
         console.log('impossible de faire la modification');
@@ -113,8 +109,8 @@ const BonusUpdate =(app)=>{
     update: BonusUpdate
   };
 /*
-curl -d "{\"firstname\" : \"Lewis\",\"lastname\" : \"Carroll\",\"email\" : \"test@email.fr\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
-curl -d "{\"email\" : \"email@new.ml\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"firstname\" : \"Lewis\",\"lastname\" : \"Carroll\",\"email\" : \"zzzebree11ail.fr\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
+curl -d "{\"email\" : \"zzz.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 */
 
     
@@ -130,4 +126,5 @@ curl -d "{\"email\" : \"email@new.ml\",\"password\" : \"azertyx\"}" -H "Content-
         // res.render('index.html');
         // res.send('Vous etes dans la zone faite pour les utilisateur!');
        }
-     }*/
+     }
+*/
