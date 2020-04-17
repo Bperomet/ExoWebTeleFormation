@@ -1,15 +1,6 @@
 const sqlModule = require('./gestionSql');
+const userMod = require('./UserModel');
 let user = null;
-
-function User(id,surname,lastname,email,password,descrip,role){
-  this.id = id||'';
-  this.firstname = surname||'';
-  this.lastname = lastname||'';
-  this.email = email||'';
-  this.password = password||'';
-  this.description = descrip||'';
-  this.role = role||'Usager';
-}
 
 const InitialiseDB = ()=>{
   sqlModule.CreatDB();
@@ -31,10 +22,10 @@ app.post('/add', function (req, res) {
    var PasswordValue = req.body.password;
    var DescriptionValue = req.body.description;
    var RoleValue = req.body.role;
+   
+   user = new userMod.User('',FirstNameValue,LastNameValue,EmailValue,PasswordValue,DescriptionValue,RoleValue);
 
-   user = new User('',FirstNameValue,LastNameValue,EmailValue,PasswordValue,DescriptionValue,RoleValue);
-
-  sqlModule.add( user, function(callback){
+   sqlModule.add( user, function(callback){
     if (callback !== null) {
       console.log(callback);
     }
@@ -53,7 +44,7 @@ const TryConect =(app)=>{
     sqlModule.get(EmailValue,PasswordValue, function(user){
       
       if(user != null){
-        //console.log(user);
+
         //Test Update
         user = JSON.parse(user);
         user.firstname = "zebre";
@@ -110,7 +101,7 @@ const BonusUpdate = (app)=>{
   };
 /*
 curl -d "{\"firstname\" : \"Lewis\",\"lastname\" : \"Carroll\",\"email\" : \"zzzebree11ail.fr\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
-curl -d "{\"email\" : \"zzz.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"email\" : \"zzzebree11ail.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 */
 
     
