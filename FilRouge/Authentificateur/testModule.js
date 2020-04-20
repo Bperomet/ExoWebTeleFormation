@@ -8,6 +8,7 @@ importModule.get(app);
 importModule.connexion(app);
 importModule.add(app);
 importModule.delete(app);
+importModule.select(app);
 
 
 app.set('port',9500);

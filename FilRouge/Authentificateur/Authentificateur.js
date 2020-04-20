@@ -14,6 +14,20 @@ const GetData = (app)=>{
  });
 };
 
+const BonusSelect = (app)=>{
+  app.get('/database/:id', function (req, res) {
+    
+    sqlModule.selectId(req.params.id,function(callback){
+      if (callback !== null) {
+        res.send(callback);
+      }
+      else{
+        res.send('Id inexistant');
+      }
+    });
+  });
+};
+
 const AddData = (app)=>{
 app.post('/add', function (req, res) {
    var FirstNameValue = req.body.firstname;
@@ -97,7 +111,8 @@ const BonusUpdate = (app)=>{
     connexion: TryConect,
     delete: BonusDelete,
     initialiseDB: InitialiseDB,
-    update: BonusUpdate
+    update: BonusUpdate,
+    select: BonusSelect
   };
 /*
 curl -d "{\"firstname\" : \"Lewis\",\"lastname\" : \"Carroll\",\"email\" : \"zzzebree11ail.fr\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"

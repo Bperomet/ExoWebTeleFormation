@@ -44,6 +44,22 @@ function Select(EmailValue,PasswordValue,callback){
             }
     });
 }
+function SelectId(idValue,callback){
+    db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
+        if (err) {
+            console.log(err);
+        }
+        else{
+        }
+            if (row != null) {
+                console.log(row);
+                callback(JSON.stringify(row));
+            }
+            else {
+                callback(null);
+            }
+    });
+}
 function SelectAll(callback){
     db.all('SELECT ID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD, DESCRIPTION, ROLE FROM userData', function (err, rows) {
         var output = [];
@@ -140,5 +156,6 @@ module.exports ={
     add: Create,
     update: Update,
     remove: Delete,
-    CreatDB: CreatDB
+    CreatDB: CreatDB,
+    selectId: SelectId
 }
