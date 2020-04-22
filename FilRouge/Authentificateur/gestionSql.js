@@ -1,6 +1,8 @@
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('AuthDB.db');
+const userMod = require('./User');
+
 
 function CreatDB(){
     db.serialize(function(){
@@ -29,15 +31,16 @@ function CreatDB(){
     });
 }
 
-function Select(EmailValue,PasswordValue,callback){
-    db.get('SELECT * From userData WHERE email=? AND password=?', EmailValue, PasswordValue, function (err, row) {
+function Select(user,callback){
+    db.get('SELECT * From userData WHERE email=? AND password=?', user.email, user.password, function (err, row) {
         if (err) {
             console.log(err);
         }
         else{
         }
             if (row != null) {
-                callback(JSON.stringify(row));
+                
+                callback(new userMod.User(row));
             }
             else {
                 callback(null);
@@ -52,8 +55,7 @@ function SelectId(idValue,callback){
         else{
         }
             if (row != null) {
-                console.log(row);
-                callback(JSON.stringify(row));
+                callback(new userMod.User(row));
             }
             else {
                 callback(null);
@@ -71,12 +73,13 @@ function SelectAll(callback){
             
             } 
             else {
-            rows.forEach(function (row) {
+            rows.forEach(function (row) {/*
                 output.push({ id: row.id, firstname: row.firstname, lastname: row.lastname, 
                 email: row.email, password: row.password, 
-                description: row.description, role: row.role});
+                description: row.description, role: row.role});*/
+                output.push(new userMod.User(row));
             });
-            callback(JSON.stringify(output));
+            callback(output);
             }
         }
     });
@@ -84,7 +87,7 @@ function SelectAll(callback){
 
 function Create(user, callback){
 
-    db.get('SELECT EMAIL FROM userData WHERE email=?', user.emailUser, function (err, row) {
+    db.get('SELECT EMAIL FROM userData WHERE email=?', user.email, function (err, row) {
         if (err) {
             console.log(err);
         }
@@ -98,7 +101,7 @@ function Create(user, callback){
             else {
 
                 user.id = this.lastID;
-                callback(JSON.stringify(user));
+                callback(user);
             }
           });
         }
@@ -117,7 +120,7 @@ function Update(user,callback){
             callback(null);
         } 
         else {
-            callback(JSON.stringify(user));
+            callback(user);
         }
     });
 }

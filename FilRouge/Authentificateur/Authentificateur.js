@@ -1,69 +1,67 @@
 const sqlModule = require('./gestionSql');
-const userMod = require('./UserModel');
-let user = null;
+const userMod = require('./User');
+var user = null;
 
-const InitialiseDB = ()=>{
+function Authentificateur(){}
+
+Authentificateur.prototype.InitialiseDB = function(){
   sqlModule.CreatDB();
 }
 
-const GetData = (app)=>{
-  app.get('/database', function (req, res) {
+Authentificateur.prototype.GetData = function(app){
+  app.get('/users', function (req, res) {
     sqlModule.getAll(function(users){
-      res.send(users);
+      res.send(JSON.stringify(users));
     });
  });
 };
 
-const BonusSelect = (app)=>{
-  app.get('/database/:id', function (req, res) {
+Authentificateur.prototype.BonusSelect = function(app){
+  app.get('/users/:id', function (req, res) {
     
-    sqlModule.selectId(req.params.id,function(callback){
-      if (callback !== null) {
-        res.send(callback);
+    sqlModule.selectId(req.params.id,function(callbackUser){
+      if (callbackUser !== null) {
+        res.send(JSON.stringify(callbackUser));
       }
       else{
-        res.send('Id inexistant');
+        res.send({"error":"User not found"});
       }
     });
   });
 };
 
-const AddData = (app)=>{
+Authentificateur.prototype.AddData = function(app){
 app.post('/add', function (req, res) {
-   var FirstNameValue = req.body.firstname;
-   var LastNameValue = req.body.lastname;
-   var EmailValue = req.body.email;
-   var PasswordValue = req.body.password;
-   var DescriptionValue = req.body.description;
-   var RoleValue = req.body.role;
-   
-   user = new userMod.User('',FirstNameValue,LastNameValue,EmailValue,PasswordValue,DescriptionValue,RoleValue);
 
-   sqlModule.add( user, function(callback){
-    if (callback !== null) {
-      console.log(callback);
+   user = new userMod.User(req.body);
+   console.log(user);
+   sqlModule.add( user, function(callbackUser){
+    if (callbackUser !== null) {
+      res.send(JSON.stringify(callbackUser));    
     }
     else{
       console.log('La creation a echoue');
+      res.send({"error":"Creation failed"});
     }
   });
  });
 };
 
-const TryConect =(app)=>{
+Authentificateur.prototype.TryConect =function(app){
  app.post('/connection', function (req, res) {
-    var EmailValue = req.body.email;
-    var PasswordValue = req.body.password;
 
-    sqlModule.get(EmailValue,PasswordValue, function(user){
+    user = new userMod.User(req.body);
+    sqlModule.get(user, function(callbackUser){
       
-      if(user != null){
+      if(callbackUser != null){
 
         //Test Update
-        user = JSON.parse(user);
-        user.firstname = "zebre";
-        console.log(user);
-        sqlModule.update(user,function(callback){
+        console.log(callbackUser);
+        res.send({"error":"Creation failed"});
+
+        callbackUser.firstname = "zebre";
+
+        sqlModule.update(callbackUser ,function(callback){
           if (callback !== null) {
             console.log(callback);
           }
@@ -76,47 +74,48 @@ const TryConect =(app)=>{
   });
 };
 
-const BonusDelete = (app)=>{
+Authentificateur.prototype.BonusDelete = function(app){
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
+
     sqlModule.remove(IdValue,function(callback){
       if (callback) {
         console.log('User supprimer');
+        res.send({"action":"User deleted"});
       }
       else{
         console.log('suppression impossible');
+        res.send({"error":"Deletion failed"});
+
       }
     });
   });
 };
 
-const BonusUpdate = (app)=>{
+Authentificateur.prototype.BonusUpdate = (app)=>{
   app.post('/update', function (req, res) {
-    var IdValue = req.body.id;
     
-    sqlModule.update(user,function(callback){
-      if (callback !== null) {
-        console.log(callback);
+    sqlModule.update(user,function(callbackUser){
+      if (callbackUser !== null) {
+
+        console.log(callbackUser);
+        res.send(JSON.stringify(callbackUser));    
       }
       else{
         console.log('impossible de faire la modification');
+        res.send({"error":"Impossible to modify"});
       }
     });
   });
 };
 
   module.exports = {
-    get:GetData,
-    add:AddData,
-    connexion: TryConect,
-    delete: BonusDelete,
-    initialiseDB: InitialiseDB,
-    update: BonusUpdate,
-    select: BonusSelect
+    Authentificateur:Authentificateur,
   };
 /*
-curl -d "{\"firstname\" : \"Lewis\",\"lastname\" : \"Carroll\",\"email\" : \"zzzebree11ail.fr\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
-curl -d "{\"email\" : \"zzzebree11ail.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
+curl -d "{\"email\" : \"sdsd@email.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/delete"
 */
 
     
