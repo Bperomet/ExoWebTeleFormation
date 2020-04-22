@@ -20,7 +20,7 @@ Authentificateur.prototype.BonusSelect = (app)=>{
   app.get('/users/:id', function (req, res) {
     
     sqlModule.selectId(req.params.id,function(callbackUser){
-      if (callbackUser !== null) {
+      if (callbackUser instanceof userMod.User) {
         res.send(JSON.stringify(callbackUser));
       }
       else{
@@ -36,7 +36,7 @@ app.post('/add', function (req, res) {
    user = new userMod.User(req.body);
    console.log(user);
    sqlModule.add( user, function(callbackUser){
-    if (callbackUser !== null) {
+    if (callbackUser instanceof userMod.User) {
       res.send(JSON.stringify(callbackUser));    
     }
     else{
@@ -53,7 +53,7 @@ Authentificateur.prototype.TryConect =(app)=>{
     user = new userMod.User(req.body);
     sqlModule.get(user, function(callbackUser){
       
-      if(callbackUser != null){
+      if(callbackUser instanceof userMod.User){
 
         //Test Update
         console.log(callbackUser);
@@ -62,7 +62,7 @@ Authentificateur.prototype.TryConect =(app)=>{
         callbackUser.firstname = "zebre";
 
         sqlModule.update(callbackUser ,function(callback){
-          if (callback !== null) {
+          if (callbackUser instanceof userMod.User) {
             console.log(callback);
           }
           else{
@@ -96,7 +96,7 @@ Authentificateur.prototype.BonusUpdate = (app)=>{
   app.post('/update', function (req, res) {
     
     sqlModule.update(user,function(callbackUser){
-      if (callbackUser !== null) {
+      if (callbackUser instanceof userMod.User) {
 
         console.log(callbackUser);
         res.send(JSON.stringify(callbackUser));    
