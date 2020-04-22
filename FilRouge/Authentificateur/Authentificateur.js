@@ -4,11 +4,11 @@ var user = null;
 
 function Authentificateur(){}
 
-Authentificateur.prototype.InitialiseDB = function(){
+Authentificateur.prototype.InitialiseDB = ()=>{
   sqlModule.CreatDB();
 }
 
-Authentificateur.prototype.GetData = function(app){
+Authentificateur.prototype.GetData = (app)=>{
   app.get('/users', function (req, res) {
     sqlModule.getAll(function(users){
       res.send(JSON.stringify(users));
@@ -16,7 +16,7 @@ Authentificateur.prototype.GetData = function(app){
  });
 };
 
-Authentificateur.prototype.BonusSelect = function(app){
+Authentificateur.prototype.BonusSelect = (app)=>{
   app.get('/users/:id', function (req, res) {
     
     sqlModule.selectId(req.params.id,function(callbackUser){
@@ -30,7 +30,7 @@ Authentificateur.prototype.BonusSelect = function(app){
   });
 };
 
-Authentificateur.prototype.AddData = function(app){
+Authentificateur.prototype.AddData = (app)=>{
 app.post('/add', function (req, res) {
 
    user = new userMod.User(req.body);
@@ -47,7 +47,7 @@ app.post('/add', function (req, res) {
  });
 };
 
-Authentificateur.prototype.TryConect =function(app){
+Authentificateur.prototype.TryConect =(app)=>{
  app.post('/connection', function (req, res) {
 
     user = new userMod.User(req.body);
@@ -74,7 +74,7 @@ Authentificateur.prototype.TryConect =function(app){
   });
 };
 
-Authentificateur.prototype.BonusDelete = function(app){
+Authentificateur.prototype.BonusDelete = (app)=>{
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
 
