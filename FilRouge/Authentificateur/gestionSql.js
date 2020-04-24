@@ -99,7 +99,7 @@ function Create(user, callback){
                 console.log(err);
             } 
             else {
-
+                 
                 user.id = this.lastID;
                 callback(user);
             }

@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-const importModule = require('./Authentificateur');
+const importModule = require('./UserHandler');
 
-const authentificateur = new importModule.Authentificateur();
+const authentificateur = new importModule.UserHandler();
 
 authentificateur.InitialiseDB();
 authentificateur.GetData(app);

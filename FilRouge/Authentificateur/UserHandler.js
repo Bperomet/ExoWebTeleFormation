@@ -2,13 +2,13 @@ const sqlModule = require('./gestionSql');
 const userMod = require('./User');
 var user = null;
 
-function Authentificateur(){}
+function UserHandler(){}
 
-Authentificateur.prototype.InitialiseDB = ()=>{
+UserHandler.prototype.InitialiseDB = ()=>{
   sqlModule.CreatDB();
 }
 
-Authentificateur.prototype.GetData = (app)=>{
+UserHandler.prototype.GetData = (app)=>{
   app.get('/users', function (req, res) {
     sqlModule.getAll(function(users){
       res.send(JSON.stringify(users));
@@ -16,7 +16,7 @@ Authentificateur.prototype.GetData = (app)=>{
  });
 };
 
-Authentificateur.prototype.BonusSelect = (app)=>{
+UserHandler.prototype.BonusSelect = (app)=>{
   app.get('/users/:id', function (req, res) {
     
     sqlModule.selectId(req.params.id,function(callbackUser){
@@ -30,7 +30,7 @@ Authentificateur.prototype.BonusSelect = (app)=>{
   });
 };
 
-Authentificateur.prototype.AddData = (app)=>{
+UserHandler.prototype.AddData = (app)=>{
 app.post('/add', function (req, res) {
 
    user = new userMod.User(req.body);
@@ -47,7 +47,7 @@ app.post('/add', function (req, res) {
  });
 };
 
-Authentificateur.prototype.TryConect =(app)=>{
+UserHandler.prototype.TryConect =(app)=>{
  app.post('/connection', function (req, res) {
 
     user = new userMod.User(req.body);
@@ -57,7 +57,9 @@ Authentificateur.prototype.TryConect =(app)=>{
 
         //Test Update
         console.log(callbackUser);
-        res.send({"error":"Creation failed"});
+        //res.send({"error":"Creation failed"});
+
+        //Token   retour json + token (cha256)
 
         callbackUser.firstname = "zebre";
 
@@ -74,7 +76,7 @@ Authentificateur.prototype.TryConect =(app)=>{
   });
 };
 
-Authentificateur.prototype.BonusDelete = (app)=>{
+UserHandler.prototype.BonusDelete = (app)=>{
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
 
@@ -92,7 +94,7 @@ Authentificateur.prototype.BonusDelete = (app)=>{
   });
 };
 
-Authentificateur.prototype.BonusUpdate = (app)=>{
+UserHandler.prototype.BonusUpdate = (app)=>{
   app.post('/update', function (req, res) {
     
     sqlModule.update(user,function(callbackUser){
@@ -110,15 +112,13 @@ Authentificateur.prototype.BonusUpdate = (app)=>{
 };
 
   module.exports = {
-    Authentificateur:Authentificateur,
+    UserHandler:UserHandler,
   };
 /*
 curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
 curl -d "{\"email\" : \"sdsd@email.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/delete"
 */
-
-    
      //   app.set('view engine','ejs');
     // user =null;
    //  console.log(user)
@@ -132,4 +132,6 @@ curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://
         // res.send('Vous etes dans la zone faite pour les utilisateur!');
        }
      }
+
+
 */
