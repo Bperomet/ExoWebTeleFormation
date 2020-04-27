@@ -12,7 +12,7 @@ SqlToken.prototype.CreatDB = ()=>{
         var dateNow =date.toLocaleString();
         var dateExpi = new Date(date.getFullYear(),date.getMonth(),date.getDate()+1,date.getHours(),date.getMinutes(),date.getSeconds()).toLocaleString();
 
-        dbToken.run('CREATE TABLE IF NOT EXISTS tokenData (id INTEGER PRIMARY KEY AUTOINCREMENT, idUser INT,token VARCHAR(255), creationDate DATETIME, expiryDate DATETIME)');
+        dbToken.run('CREATE TABLE IF NOT EXISTS tokenData (id INTEGER PRIMARY KEY AUTOINCREMENT, idUser INT,token VARCHAR(255), creationDate DATE, expiryDate DATE)');
     
         dbToken.all('SELECT * FROM tokenData', function (err, row) {
             if(err){
@@ -37,26 +37,47 @@ SqlToken.prototype.CreatDB = ()=>{
     });
 }
 
-SqlToken.prototype.Select = (user,callback)=>{
-    dbToken.get('SELECT * From tokenData WHERE idUser=?', user.id, function (err, row) {
+SqlToken.prototype.SelectTokensUser = (user,callback)=>{
+    dbToken.all('SELECT * From tokenData WHERE idUser=?', user.id, function (err, rows) {
         if (err) {
             console.log(err);
+            callback(null);
         }
         else{
-        }
-            if (row != null) {
-                
-                callback(new tokenMod.Token(row));
+            if (rows.length === 0) {
+                callback(null);
+            } 
+            else {
+                var output = [];
+                rows.forEach(function (row) {
+                    output.push(new tokenMod.Token(row));
+                });
+                callback(output);
             }
+        }
+    });
+}
+SqlToken.prototype.SelectCurrentTokenUser = (user,callback)=>{
+    dbToken.get('SELECT * From tokenData WHERE idUser=? ORDER BY DATE(expiryDate) ', user.id,function (err, row) {
+        if (err) {
+            console.log(err);
+            callback(null);
+        }
+        else{
+            if (row != null) {
+                callback(new tokenMod.Token(row));
+            } 
             else {
                 callback(null);
             }
+        }
     });
 }
-SqlToken.prototype.SelectId = (idValue,callback)=>{
+SqlToken.prototype.SelectIdToken = (idValue,callback)=>{
     dbToken.get('SELECT * From tokenData WHERE id=?', idValue , function (err, row) {
         if (err) {
             console.log(err);
+            callback(null);
         }
         else{
         }
@@ -70,15 +91,17 @@ SqlToken.prototype.SelectId = (idValue,callback)=>{
 }
 SqlToken.prototype.SelectAll = (callback)=>{
     dbToken.all('SELECT * FROM tokenData', function (err, rows) {
-        var output = [];
+        
         if (err) {
             console.log(err);
+            callback(null);
         } 
         else {
             if (rows.length === 0) {
                 callback(null);
             } 
             else {
+                var output = [];
                 rows.forEach(function (row) {
                     output.push(new tokenMod.Token(row));
                 });
@@ -87,30 +110,46 @@ SqlToken.prototype.SelectAll = (callback)=>{
         }
     });
 }
-// a finir
-SqlToken.prototype.Create = (user, callback)=>{
 
-    dbToken.get('SELECT ID FROM tokenData WHERE email=?', user.email, function (err, row) {
-        if (err) {
-            console.log(err);
-        }
-//dbToken.run('UPDATE userData SET firstname = ?, lastname = ?, email = ?, password = ?, description = ?, role = ? WHERE id=? AND NOT EXISTS (SELECT EMAIL FROM userData WHERE email = ? AND id != ?)', 
-        if (row === undefined) {
-            dbToken.run('INSERT INTO userData (firstname, lastname, email, password, description, role) VALUES (?, ?, ?, ?, ?, ?)', 
-            user.firstname, user.lastname, user.email, user.password, user.description, user.role, function (err) {
+SqlToken.prototype.Create = (user, callback)=>{
+    if(user instanceof userMod.User && user.id != ''){
+        var token = new tokenMod.Token();
+        dbToken.run('INSERT INTO tokenData (idUser, token, creationDate, expiryDate) VALUES (?, ?, ?, ?)', 
+        user.id, token.token, token.creationDate, token.expiryDate, function (err) {
+            if (err) {
+                console.log(err);
+                callback(null);
+            } 
+            else {
+                token.id = this.lastID;
+                token.idUser = user.id;
+                token.token = token.TokenOutput();
+
+                dbToken.run('UPDATE tokenData SET token = ? WHERE id=?', token.token,token.id, function (err) {
+                    if(err){
+                        console.log(err);
+                        callback(null);
+                    }
+                    else{
+                        callback(token);
+                    }
+                });
+            }
+        }); 
+    } 
+}
+
+SqlToken.prototype.Delete = (IdValue,callback)=>{
+    if (IdValue !== '' && IdValue !== undefined) {
+        dbToken.run('DELETE FROM tokenData WHERE id=?', IdValue, function (err) {
             if (err) {
                 console.log(err);
             } 
             else {
-                 
-                user.id = this.lastID;
-                callback(user);
+                callback(true);
             }
-          });
-        }
-        else{
-          callback(null);
-        }
-      });
+        });
+    } 
 }
+
 module.exports = {SqlToken: SqlToken};

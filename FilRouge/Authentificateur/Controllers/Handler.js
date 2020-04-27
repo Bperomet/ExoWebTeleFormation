@@ -41,9 +41,10 @@ Handler.prototype.AddData = (app)=>{
 app.post('/add', function (req, res) {
 
    user = new userMod.User(req.body);
-   console.log(user);
+
    sqlUser.add( user, function(callbackUser){
     if (callbackUser instanceof userMod.User) {
+
       res.send(JSON.stringify(callbackUser));    
     }
     else{
@@ -59,25 +60,29 @@ Handler.prototype.TryConect =(app)=>{
 
     user = new userMod.User(req.body);
     sqlUser.get(user, function(callbackUser){
-      
+
       if(callbackUser instanceof userMod.User){
 
-        //Test Update
-        console.log(callbackUser);
-        //res.send({"error":"Creation failed"});
+        sqlToken.SelectCurrentTokenUser(callbackUser,function(callbackToken){
 
-        //Token   retour json + token (cha256)
+          if (callbackToken instanceof tokenMod.Token && new Date().toLocaleString()<callbackToken.expiryDate) {
 
-  /*      callbackUser.firstname = "zebre";
-
-        sqlUser.update(callbackUser ,function(callback){
-          if (callbackUser instanceof userMod.User) {
-            console.log(callback);
+            res.send(JSON.stringify(callbackToken));    
           }
           else{
-            console.log(callback +" pas update");
+            sqlToken.Create(callbackUser,function(callbackNewToken){
+              if (callbackNewToken instanceof tokenMod.Token) {
+                token = callbackToken;
+                res.send(JSON.stringify(callbackNewToken));    
+              }
+              else{
+                token = callbackToken;
+                console.log('La creation a echoue');
+                res.send({"error":"Creation failed"});
+              }
+            });
           }
-        });*/
+        });
       }
     });
   });
@@ -123,7 +128,7 @@ module.exports = {
 };
 /*
 curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
-curl -d "{\"email\" : \"sdsd@email.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"email\" : \"email@email.ml\",\"password\" : \"Password\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/delete"
 */
      //   app.set('view engine','ejs');
@@ -140,5 +145,19 @@ curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://
        }
      }
 
+        //Test Update
+        //res.send({"error":"Creation failed"});
 
-*/
+        //Token   retour json + token (cha256)
+
+  /*      callbackUser.firstname = "zebre";
+
+        sqlUser.update(callbackUser ,function(callback){
+          if (callbackUser instanceof userMod.User) {
+            console.log(callback);
+          }
+          else{
+            console.log(callback +" pas update");
+          }
+        });*/
+
