@@ -1,25 +1,32 @@
-const sqlModule = require('./gestionSql');
-const userMod = require('./User');
+const sqlUser = require('../SqlHandler/GestionSqlUser');
+const sqlTokens = require('../SqlHandler/GestionSqlToken');
+const userMod = require('../Models/User');
+const tokenMod = require('../Models/Token');
+const sqlToken = new sqlTokens.SqlToken();
+
+
 var user = null;
+var token = null;
 
-function UserHandler(){}
+function Handler(){}
 
-UserHandler.prototype.InitialiseDB = ()=>{
-  sqlModule.CreatDB();
+Handler.prototype.InitialiseDB = ()=>{
+  sqlUser.CreatDB();
+  sqlToken.CreatDB();
 }
 
-UserHandler.prototype.GetData = (app)=>{
+Handler.prototype.GetData = (app)=>{
   app.get('/users', function (req, res) {
-    sqlModule.getAll(function(users){
+    sqlUser.getAll(function(users){
       res.send(JSON.stringify(users));
     });
  });
 };
 
-UserHandler.prototype.BonusSelect = (app)=>{
+Handler.prototype.BonusSelect = (app)=>{
   app.get('/users/:id', function (req, res) {
     
-    sqlModule.selectId(req.params.id,function(callbackUser){
+    sqlUser.selectId(req.params.id,function(callbackUser){
       if (callbackUser instanceof userMod.User) {
         res.send(JSON.stringify(callbackUser));
       }
@@ -30,12 +37,12 @@ UserHandler.prototype.BonusSelect = (app)=>{
   });
 };
 
-UserHandler.prototype.AddData = (app)=>{
+Handler.prototype.AddData = (app)=>{
 app.post('/add', function (req, res) {
 
    user = new userMod.User(req.body);
    console.log(user);
-   sqlModule.add( user, function(callbackUser){
+   sqlUser.add( user, function(callbackUser){
     if (callbackUser instanceof userMod.User) {
       res.send(JSON.stringify(callbackUser));    
     }
@@ -47,11 +54,11 @@ app.post('/add', function (req, res) {
  });
 };
 
-UserHandler.prototype.TryConect =(app)=>{
+Handler.prototype.TryConect =(app)=>{
  app.post('/connection', function (req, res) {
 
     user = new userMod.User(req.body);
-    sqlModule.get(user, function(callbackUser){
+    sqlUser.get(user, function(callbackUser){
       
       if(callbackUser instanceof userMod.User){
 
@@ -61,26 +68,26 @@ UserHandler.prototype.TryConect =(app)=>{
 
         //Token   retour json + token (cha256)
 
-        callbackUser.firstname = "zebre";
+  /*      callbackUser.firstname = "zebre";
 
-        sqlModule.update(callbackUser ,function(callback){
+        sqlUser.update(callbackUser ,function(callback){
           if (callbackUser instanceof userMod.User) {
             console.log(callback);
           }
           else{
             console.log(callback +" pas update");
           }
-        });
+        });*/
       }
     });
   });
 };
 
-UserHandler.prototype.BonusDelete = (app)=>{
+Handler.prototype.BonusDelete = (app)=>{
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
 
-    sqlModule.remove(IdValue,function(callback){
+    sqlUser.remove(IdValue,function(callback){
       if (callback) {
         console.log('User supprimer');
         res.send({"action":"User deleted"});
@@ -94,10 +101,10 @@ UserHandler.prototype.BonusDelete = (app)=>{
   });
 };
 
-UserHandler.prototype.BonusUpdate = (app)=>{
+Handler.prototype.BonusUpdate = (app)=>{
   app.post('/update', function (req, res) {
     
-    sqlModule.update(user,function(callbackUser){
+    sqlUser.update(user,function(callbackUser){
       if (callbackUser instanceof userMod.User) {
 
         console.log(callbackUser);
@@ -111,9 +118,9 @@ UserHandler.prototype.BonusUpdate = (app)=>{
   });
 };
 
-  module.exports = {
-    UserHandler:UserHandler,
-  };
+module.exports = {
+  Handler:Handler,
+};
 /*
 curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
 curl -d "{\"email\" : \"sdsd@email.fr\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"

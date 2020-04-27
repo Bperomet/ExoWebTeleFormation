@@ -10,18 +10,11 @@ function User(_user){
   this.role = _user.role||'Usager';
 }
 
-User.prototype.StringVerification();///////////////////////////////
-
-function StringVerification(text){
+User.prototype.StringVerification = function(text){
   if(typeof text === 'string'){
-     return text.replace(/[.*+?^$<>{}()|[\]\\]/g, '');
-  }
-  return '';
+    return text.replace(/[.*+?^$<>{}()|[\]\\]/g, '');
+ }
+ return '';
 };
 
   module.exports ={User: User};
-  /* 
-    id token  date creation  date expiration table relier avec l'id
-
-    generer token table gerer la conection recuperer le token en json
-  */
