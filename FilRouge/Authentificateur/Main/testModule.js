@@ -6,16 +6,16 @@ const importModule = require('../Controllers/Handler');
 const authentificateur = new importModule.Handler();
 
 authentificateur.InitialiseDB();
-authentificateur.GetData(app);
+authentificateur.GetUsers(app);
 authentificateur.TryConect(app);
 authentificateur.AddData(app);
-authentificateur.BonusDelete(app);
-authentificateur.BonusSelect(app);
+authentificateur.DeleteUser(app);
+authentificateur.SelectUser(app);
 
 const importModuleToken = require('../Controllers/TokenHandler');
 const tokenHandler = new importModuleToken.TokenHandler();
 
-tokenHandler.GetDataTokens(app);
+tokenHandler.GetTokens(app);
 
 
 app.set('port',9500);

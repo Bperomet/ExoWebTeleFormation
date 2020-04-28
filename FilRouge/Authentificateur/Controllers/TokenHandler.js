@@ -3,7 +3,7 @@ const sqlToken = new sqlTokens.SqlToken();
 
 function TokenHandler(){};
 
-TokenHandler.prototype.GetDataTokens = (app)=>{
+TokenHandler.prototype.GetTokens = (app)=>{
     app.get('/tokens', function (req, res) {
       sqlToken.SelectAll(function(tokens){
         res.send(JSON.stringify(tokens));

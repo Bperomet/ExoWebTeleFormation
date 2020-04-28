@@ -4,9 +4,8 @@ const userMod = require('../Models/User');
 const tokenMod = require('../Models/Token');
 const sqlToken = new sqlTokens.SqlToken();
 
-
 var user = null;
-var token = null;
+var tokenUser = null;
 
 function Handler(){}
 
@@ -15,7 +14,7 @@ Handler.prototype.InitialiseDB = ()=>{
   sqlToken.CreatDB();
 }
 
-Handler.prototype.GetData = (app)=>{
+Handler.prototype.GetUsers = (app)=>{
   app.get('/users', function (req, res) {
     sqlUser.getAll(function(users){
       res.send(JSON.stringify(users));
@@ -23,18 +22,24 @@ Handler.prototype.GetData = (app)=>{
  });
 };
 
-Handler.prototype.BonusSelect = (app)=>{
-  app.get('/users/:tokenUrl', function (req, res) {
-    
-   // sqlUser.selectId(req.params.tokenUrl,function(callbackUser){
-    sqlUser.selectId(req.params.id,function(callbackUser){
-      if (callbackUser instanceof userMod.User) {
-        res.send(JSON.stringify(callbackUser));
-      }
-      else{
-        res.send({"error":"User not found"});
-      }
-    });
+Handler.prototype.SelectUser = (app)=>{
+  app.get('/users/:id', function (req, res) {
+
+    if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
+
+      sqlUser.selectId(req.params.id,function(callbackUser){
+        if (callbackUser instanceof userMod.User && callbackUser.id === tokenUser.idUser) {
+          res.send(JSON.stringify(callbackUser));
+        }
+        else{
+          res.send({"error":"User not found"});
+        }
+      });
+    }
+    else
+    {
+      res.send({"error":"Token not found"});
+    }
   });
 };
 
@@ -67,17 +72,19 @@ Handler.prototype.TryConect =(app)=>{
         sqlToken.SelectCurrentTokenUser(callbackUser,function(callbackToken){
 
           if (callbackToken instanceof tokenMod.Token && new Date().toLocaleString()<callbackToken.expiryDate) {
+            tokenUser = callbackToken;
+console.log(tokenUser);
 
             res.send(JSON.stringify(callbackToken));    
           }
           else{
             sqlToken.Create(callbackUser,function(callbackNewToken){
               if (callbackNewToken instanceof tokenMod.Token) {
-                token = callbackToken;
+                tokenUser = callbackToken;
                 res.send(JSON.stringify(callbackNewToken));    
               }
               else{
-                token = callbackToken;
+                tokenUser = callbackToken;
                 console.log('La creation a echoue');
                 res.send({"error":"Creation failed"});
               }
@@ -89,7 +96,7 @@ Handler.prototype.TryConect =(app)=>{
   });
 };
 
-Handler.prototype.BonusDelete = (app)=>{
+Handler.prototype.DeleteUser = (app)=>{
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
 
@@ -107,7 +114,7 @@ Handler.prototype.BonusDelete = (app)=>{
   });
 };
 
-Handler.prototype.BonusUpdate = (app)=>{
+Handler.prototype.UpdateUser = (app)=>{
   app.post('/update', function (req, res) {
     
     sqlUser.update(user,function(callbackUser){
@@ -129,7 +136,7 @@ module.exports = {
 };
 /*
 curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
-curl -d "{\"email\" : \"email@email.ml\",\"password\" : \"Password\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/delete"
 */
      //   app.set('view engine','ejs');
