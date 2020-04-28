@@ -16,7 +16,7 @@ Token.prototype.GetDateExpiry = ()=>{
 }
 
 Token.prototype.TokenOutput = ()=>{
-    var hash = crypto.createHash('sha256').update(this.id+"007"+this.creationDate).digest('hex');
+    var hash = crypto.createHash('sha256').update(this.idUser+"007"+this.creationDate).digest('hex');
     return hash;
 }
 

@@ -7,14 +7,14 @@ const sqlToken = new sqlTokens.SqlToken();
 var user = null;
 var tokenUser = null;
 
-function Handler(){}
+function UserHandler(){}
 
-Handler.prototype.InitialiseDB = ()=>{
+UserHandler.prototype.InitialiseDB = ()=>{
   sqlUser.CreatDB();
   sqlToken.CreatDB();
 }
 
-Handler.prototype.GetUsers = (app)=>{
+UserHandler.prototype.GetUsers = (app)=>{
   app.get('/users', function (req, res) {
     sqlUser.getAll(function(users){
       res.send(JSON.stringify(users));
@@ -22,7 +22,7 @@ Handler.prototype.GetUsers = (app)=>{
  });
 };
 
-Handler.prototype.SelectUser = (app)=>{
+UserHandler.prototype.SelectUser = (app)=>{
   app.get('/users/:id', function (req, res) {
 
     if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
@@ -43,7 +43,7 @@ Handler.prototype.SelectUser = (app)=>{
   });
 };
 
-Handler.prototype.AddData = (app)=>{
+UserHandler.prototype.AddData = (app)=>{
 app.post('/add', function (req, res) {
 
    user = new userMod.User(req.body);
@@ -61,7 +61,7 @@ app.post('/add', function (req, res) {
  });
 };
 
-Handler.prototype.TryConect =(app)=>{
+UserHandler.prototype.TryConect =(app)=>{
  app.post('/connection', function (req, res) {
 
     user = new userMod.User(req.body);
@@ -96,7 +96,7 @@ console.log(tokenUser);
   });
 };
 
-Handler.prototype.DeleteUser = (app)=>{
+UserHandler.prototype.DeleteUser = (app)=>{
   app.post('/delete', function (req, res) {
     var IdValue = req.body.id;
 
@@ -114,7 +114,7 @@ Handler.prototype.DeleteUser = (app)=>{
   });
 };
 
-Handler.prototype.UpdateUser = (app)=>{
+UserHandler.prototype.UpdateUser = (app)=>{
   app.post('/update', function (req, res) {
     
     sqlUser.update(user,function(callbackUser){
@@ -132,11 +132,11 @@ Handler.prototype.UpdateUser = (app)=>{
 };
 
 module.exports = {
-  Handler:Handler,
+  UserHandler:UserHandler,
 };
 /*
-curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
-curl -d "{\"email\" : \"zeeroundeux.com\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
+curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeuxs.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
+curl -d "{\"email\" : \"zeeroundeuxs.com\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/delete"
 */
      //   app.set('view engine','ejs');

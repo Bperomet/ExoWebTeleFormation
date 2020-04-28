@@ -114,6 +114,10 @@ SqlToken.prototype.SelectAll = (callback)=>{
 SqlToken.prototype.Create = (user, callback)=>{
     if(user instanceof userMod.User && user.id != ''){
         var token = new tokenMod.Token();
+
+        token.idUser = user.id;
+        token.token = token.TokenOutput();
+
         dbToken.run('INSERT INTO tokenData (idUser, token, creationDate, expiryDate) VALUES (?, ?, ?, ?)', 
         user.id, token.token, token.creationDate, token.expiryDate, function (err) {
             if (err) {
@@ -122,18 +126,7 @@ SqlToken.prototype.Create = (user, callback)=>{
             } 
             else {
                 token.id = this.lastID;
-                token.idUser = user.id;
-                token.token = token.TokenOutput();
-
-                dbToken.run('UPDATE tokenData SET token = ? WHERE id=?', token.token,token.id, function (err) {
-                    if(err){
-                        console.log(err);
-                        callback(null);
-                    }
-                    else{
-                        callback(token);
-                    }
-                });
+                callback(token);
             }
         }); 
     } 
