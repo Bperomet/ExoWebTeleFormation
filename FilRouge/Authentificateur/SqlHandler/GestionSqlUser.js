@@ -48,6 +48,7 @@ function Select(user,callback){
     });
 }
 function SelectId(idValue,callback){
+    //select token et redupe iduser >get user
     db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
         if (err) {
             console.log(err);

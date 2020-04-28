@@ -24,8 +24,9 @@ Handler.prototype.GetData = (app)=>{
 };
 
 Handler.prototype.BonusSelect = (app)=>{
-  app.get('/users/:id', function (req, res) {
+  app.get('/users/:tokenUrl', function (req, res) {
     
+   // sqlUser.selectId(req.params.tokenUrl,function(callbackUser){
     sqlUser.selectId(req.params.id,function(callbackUser){
       if (callbackUser instanceof userMod.User) {
         res.send(JSON.stringify(callbackUser));
