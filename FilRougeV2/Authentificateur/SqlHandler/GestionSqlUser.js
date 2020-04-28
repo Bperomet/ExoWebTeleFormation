@@ -48,7 +48,6 @@ function Select(user,callback){
     });
 }
 function SelectId(idValue,callback){
-    //select token et redupe iduser >get user
     db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
         if (err) {
             console.log(err);
@@ -74,10 +73,7 @@ function SelectAll(callback){
             
             } 
             else {
-            rows.forEach(function (row) {/*
-                output.push({ id: row.id, firstname: row.firstname, lastname: row.lastname, 
-                email: row.email, password: row.password, 
-                description: row.description, role: row.role});*/
+            rows.forEach(function (row) {
                 output.push(new userMod.User(row));
             });
             callback(output);

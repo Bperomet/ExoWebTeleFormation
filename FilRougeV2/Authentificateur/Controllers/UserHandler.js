@@ -14,17 +14,13 @@ UserHandler.prototype.InitialiseDB = ()=>{
   sqlToken.CreatDB();
 }
 
-UserHandler.prototype.GetUsers = (app)=>{
-  app.get('/users', function (req, res) {
+UserHandler.prototype.GetUsers = (req, res)=>{
     sqlUser.getAll(function(users){
       res.send(JSON.stringify(users));
     });
- });
 };
 
-UserHandler.prototype.SelectUser = (app)=>{
-  app.get('/users/:id', function (req, res) {
-
+UserHandler.prototype.SelectUser = (req, res)=>{
     if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
 
       sqlUser.selectId(req.params.id,function(callbackUser){
@@ -40,15 +36,12 @@ UserHandler.prototype.SelectUser = (app)=>{
     {
       res.send({"error":"Token not found"});
     }
-  });
 };
 
-UserHandler.prototype.AddData = (app)=>{
-app.post('/add', function (req, res) {
-
+UserHandler.prototype.AddData = (req, res)=>{
    user = new userMod.User(req.body);
-
    sqlUser.add( user, function(callbackUser){
+
     if (callbackUser instanceof userMod.User) {
 
       res.send(JSON.stringify(callbackUser));    
@@ -58,12 +51,9 @@ app.post('/add', function (req, res) {
       res.send({"error":"Creation failed"});
     }
   });
- });
 };
 
-UserHandler.prototype.TryConect =(app)=>{
- app.post('/connection', function (req, res) {
-
+UserHandler.prototype.TryConect =(req, res)=>{
     user = new userMod.User(req.body);
     sqlUser.get(user, function(callbackUser){
 
@@ -73,7 +63,7 @@ UserHandler.prototype.TryConect =(app)=>{
 
           if (callbackToken instanceof tokenMod.Token && new Date().toLocaleString()<callbackToken.expiryDate) {
             tokenUser = callbackToken;
-console.log(tokenUser);
+  console.log(tokenUser);
 
             res.send(JSON.stringify(callbackToken));    
           }
@@ -93,11 +83,9 @@ console.log(tokenUser);
         });
       }
     });
-  });
 };
 
-UserHandler.prototype.DeleteUser = (app)=>{
-  app.post('/delete', function (req, res) {
+UserHandler.prototype.DeleteUser = (req, res)=>{
     var IdValue = req.body.id;
 
     sqlUser.remove(IdValue,function(callback){
@@ -111,12 +99,9 @@ UserHandler.prototype.DeleteUser = (app)=>{
 
       }
     });
-  });
 };
 
-UserHandler.prototype.UpdateUser = (app)=>{
-  app.post('/update', function (req, res) {
-    
+UserHandler.prototype.UpdateUser = (req, res)=>{
     sqlUser.update(user,function(callbackUser){
       if (callbackUser instanceof userMod.User) {
 
@@ -128,44 +113,14 @@ UserHandler.prototype.UpdateUser = (app)=>{
         res.send({"error":"Impossible to modify"});
       }
     });
-  });
 };
 
 module.exports = {
   UserHandler:UserHandler,
 };
+
 /*
 curl -d "{\"firstname\" : \"ajout\",\"lastname\" : \"did??{ier??\",\"email\" : \"zeeroundeuxs.com\",\"password\" : \"azertyx\",\"description\" : \"je suis une description\",\"role\" : \"Usager\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/add"
 curl -d "{\"email\" : \"zeeroundeuxs.com\",\"password\" : \"azertyx\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/connection"
 curl -d "{\"id\" : \"20\"}" -H "Content-Type: application/json" -X POST "http://localhost:9500/delete"
 */
-     //   app.set('view engine','ejs');
-    // user =null;
-   //  console.log(user)
-   /* if(user !== null){
-      if(user.role==='administrateur'){
-        // res.render('/AdminPage');
-       //  res.send('Vous etes dans la zone de gestion faite pour les administrateur!');
-       }
-       else{
-        // res.render('index.html');
-        // res.send('Vous etes dans la zone faite pour les utilisateur!');
-       }
-     }
-
-        //Test Update
-        //res.send({"error":"Creation failed"});
-
-        //Token   retour json + token (cha256)
-
-  /*      callbackUser.firstname = "zebre";
-
-        sqlUser.update(callbackUser ,function(callback){
-          if (callbackUser instanceof userMod.User) {
-            console.log(callback);
-          }
-          else{
-            console.log(callback +" pas update");
-          }
-        });*/
-

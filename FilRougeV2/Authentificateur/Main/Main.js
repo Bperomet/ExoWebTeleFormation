@@ -3,23 +3,27 @@ const app = express();
 app.use(express.json());
 const importModule = require('../Controllers/UserHandler');
 
-const authentificateur = new importModule.UserHandler();
+const routerUser = new importModule.UserHandler();
 
-authentificateur.InitialiseDB();
-authentificateur.GetUsers(app);
-authentificateur.TryConect(app);
-authentificateur.AddData(app);
-authentificateur.DeleteUser(app);
-authentificateur.SelectUser(app);
+routerUser.InitialiseDB();
 
-const importModuleToken = require('../Controllers/TokenHandler');
-const tokenHandler = new importModuleToken.TokenHandler();
+app.get('/users', function (req, res){
+    routerUser.GetUsers(req, res);
+});
 
-tokenHandler.GetTokens(app);
+app.get('/users/:id', function (req, res){
+    routerUser.SelectUser(req, res);
+});
 
+app.post('/connection', function (req, res){
+    routerUser.TryConect(req, res);
+});
+
+app.post('/add', function (req, res){
+    routerUser.AddData(req, res);
+});
 
 app.set('port',9500);
 console.log('Le serveur ecoute sur le port ',app.get('port'));
 app.listen(app.get('port'));
 
-//const importModule = require('./Authentificateur')(app);
