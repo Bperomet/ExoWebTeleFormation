@@ -16,9 +16,7 @@ function App() {
           <label> Password :</label>
           <input type="password" name="Password"/>
         </div>
-
-
-          <button type="submit" value="Connexion">Connexion</button>
+        <button type="submit" value="Connexion">Connexion</button>
       </form>
     </div>
   );
