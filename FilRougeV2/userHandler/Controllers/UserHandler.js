@@ -56,6 +56,7 @@ UserHandler.prototype.AddData = (req, res)=>{
 UserHandler.prototype.TryConect =(req, res)=>{
     user = new userMod.User(req.body);
     sqlUser.get(user, function(callbackUser){
+      console.log(req.body);
 
       if(callbackUser instanceof userMod.User){
 

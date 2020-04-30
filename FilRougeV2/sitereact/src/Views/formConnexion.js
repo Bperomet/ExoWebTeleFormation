@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 
 class formConnexion extends Component {
     state = {
@@ -16,6 +15,28 @@ class formConnexion extends Component {
     submit = e =>{
         e.preventDefault();
         console.log(this.state);
+        fetch('http://localhost:9500/connection',
+        {
+            method:"post",
+            mode: "cors", 
+            cache: "no-cache", 
+            credentials: "same-origin", 
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*'
+            },
+
+            body: JSON.stringify(this.state.password)
+        })
+        .then(res=> res.json())
+        .then((data)=>console.log(data))
+        .catch(console.log)
+
+       /* fetch('http://localhost:9500/Users')
+        .then(res=> res.json())
+        .then((data)=>console.log(data))
+        .catch(console.log)*/
     }
 
     render(){
