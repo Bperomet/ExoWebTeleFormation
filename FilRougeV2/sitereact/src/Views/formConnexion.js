@@ -17,19 +17,16 @@ class formConnexion extends Component {
         console.log(this.state);
         fetch('http://localhost:9500/connection',
         {
-            method:"post",
-            mode: "cors", 
-            cache: "no-cache", 
+            method:"POST",
+          //  mode: "cors", 
+         //   cache: "no-cache", 
           //  credentials: "same-origin", 
             headers: {
+               "Accept": "application/json",
                 "Content-Type": "application/json",
             },
- /*           headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': '*'
-            },*/
-            body: JSON.stringify(this.state.password)
+
+            body: JSON.stringify({'password': this.state.password})
         })
         .then(res=> res.json())
         .then((data)=>console.log(data))
