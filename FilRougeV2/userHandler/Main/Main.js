@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
+var cors = require('cors');
 app.use(express.json());
+app.use(cors());
 const importModule = require('../Controllers/UserHandler');
 
 const userHandler = new importModule.UserHandler();
@@ -8,7 +10,7 @@ const userHandler = new importModule.UserHandler();
 userHandler.InitialiseDB();
 
 app.get('/users', function (req, res){
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost');
     userHandler.GetUsers(req, res);
 });
 
@@ -16,8 +18,12 @@ app.get('/users/:id', function (req, res){
     userHandler.SelectUser(req, res);
 });
 app.post('/connection', function (req, res){
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-    //res.setHeader('Access-Control-Allow-Methods: POST')
+
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Headers',  "origin");
+    //res.setHeader('Access-Control-Allow-Methods: POST');
+    //res.setHeader('Access-Control-Allow-Headers: POST');
+
     userHandler.TryConect(req, res);
 });
 

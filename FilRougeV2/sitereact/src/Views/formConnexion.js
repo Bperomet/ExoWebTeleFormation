@@ -18,7 +18,7 @@ class formConnexion extends Component {
         fetch('http://localhost:9500/connection',
         {
             method:"POST",
-          //  mode: "cors", 
+            mode: "cors", 
          //   cache: "no-cache", 
           //  credentials: "same-origin", 
             headers: {
@@ -26,7 +26,7 @@ class formConnexion extends Component {
                 "Content-Type": "application/json",
             },
 
-            body: JSON.stringify({'password': this.state.password})
+            body: JSON.stringify(this.state)
         })
         .then(res=> res.json())
         .then((data)=>console.log(data))

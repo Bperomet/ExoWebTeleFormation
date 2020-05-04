@@ -58,6 +58,7 @@ UserHandler.prototype.TryConect =(req, res)=>{
     sqlUser.get(user, function(callbackUser){
       console.log(req.body);
 
+
       if(callbackUser instanceof userMod.User){
 
         sqlToken.SelectCurrentTokenUser(callbackUser,function(callbackToken){
@@ -82,6 +83,9 @@ UserHandler.prototype.TryConect =(req, res)=>{
             });
           }
         });
+      }
+      else{
+        res.send({"error":"connection failed"});
       }
     });
 };
