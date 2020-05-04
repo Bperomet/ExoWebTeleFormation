@@ -20,13 +20,15 @@ class formConnexion extends Component {
             method:"post",
             mode: "cors", 
             cache: "no-cache", 
-            credentials: "same-origin", 
+          //  credentials: "same-origin", 
             headers: {
+                "Content-Type": "application/json",
+            },
+ /*           headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': '*'
-            },
-
+            },*/
             body: JSON.stringify(this.state.password)
         })
         .then(res=> res.json())

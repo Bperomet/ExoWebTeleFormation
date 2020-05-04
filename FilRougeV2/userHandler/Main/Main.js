@@ -16,7 +16,7 @@ app.get('/users/:id', function (req, res){
     userHandler.SelectUser(req, res);
 });
 app.post('/connection', function (req, res){
-   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+   //  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
     userHandler.TryConect(req, res);
 });
 
