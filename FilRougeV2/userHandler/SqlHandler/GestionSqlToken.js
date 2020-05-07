@@ -58,14 +58,14 @@ SqlToken.prototype.SelectTokensUser = (user,callback)=>{
     });
 }
 SqlToken.prototype.SelectCurrentTokenUser = (user,callback)=>{
-    dbToken.get('SELECT * From tokenData WHERE idUser=? ORDER BY DATE(expiryDate) ', user.id,function (err, row) {
+    dbToken.all('SELECT * From tokenData WHERE idUser=? ORDER BY id DESC', user.id,function (err, rows) {
         if (err) {
             console.log(err);
             callback(null);
         }
         else{
-            if (row != null) {
-                callback(new tokenMod.Token(row));
+            if (rows.length > 0) {
+                callback(new tokenMod.Token(rows[0]));   
             } 
             else {
                 callback(null);

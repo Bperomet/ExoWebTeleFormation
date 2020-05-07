@@ -56,36 +56,35 @@ UserHandler.prototype.AddData = (req, res)=>{
 UserHandler.prototype.TryConect =(req, res)=>{
     user = new userMod.User(req.body);
     sqlUser.get(user, function(callbackUser){
-      console.log(req.body);
-
 
       if(callbackUser instanceof userMod.User){
-
         sqlToken.SelectCurrentTokenUser(callbackUser,function(callbackToken){
 
-          if (callbackToken instanceof tokenMod.Token && new Date().toLocaleString()<callbackToken.expiryDate) {
+          if (callbackToken instanceof tokenMod.Token && new Date().getTime()<new Date(callbackToken.expiryDate).getTime()) {
             tokenUser = callbackToken;
   console.log(tokenUser);
 
-            res.send(JSON.stringify(callbackToken));    
+            res.status(200).send(JSON.stringify(callbackToken));    
           }
           else{
             sqlToken.Create(callbackUser,function(callbackNewToken){
               if (callbackNewToken instanceof tokenMod.Token) {
                 tokenUser = callbackToken;
-                res.send(JSON.stringify(callbackNewToken));    
+                console.log("new token");
+
+                res.status(200).send(JSON.stringify(callbackNewToken));
               }
               else{
                 tokenUser = callbackToken;
                 console.log('La creation a echoue');
-                res.send({"error":"Creation failed"});
+                res.status(500).send({"error":"Creation failed"});
               }
             });
           }
         });
       }
       else{
-        res.send({"error":"connection failed"});
+        res.status(401).send({"error":"connection failed"});
       }
     });
 };
