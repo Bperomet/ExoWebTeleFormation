@@ -1,75 +1,70 @@
 import React, { Component } from 'react';
-import {useHistory,withRouter} from 'react-router-dom';
-import  { Route } from 'react-router-dom'
 
-//import history from '../../node_modules/history';
-// email: zeeroundeuxs.com
-// pswd:  azertyx
-
-/*
-let email= null;
-let password= null;
-
-function submit (e,token) {
-    e.preventDefault();
-    fetch('http://localhost:9500/connection',
-    {
-        method:"POST",
-        mode: "cors", 
-        headers: {
-           "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({'email': email, 'password': password})
-    })
-    .then((res)=>{ 
-        if(res.status ===200){
-            return res.json();
-        }
-        throw new Error("Id incorrect"); 
-    })
-    .then((data)=>{
-        console.log(data);
-        token = data;
+//zeeroundeuxs.com
+//azertyx
+export default class FormConnexion extends Component{
+    constructor(props){
+      super(props);
+      
+      this.state ={
+        user: null,
+        token: null,
+        email: "",
+        password: ""
+      }
     }
-    )
-    .catch(console.log)
 
-}
+    submitConnect = (e) => {
+        e.preventDefault();
+        fetch('http://localhost:9500/connection',
+        {
+            method:"POST",
+            mode: "cors", 
+            headers: {
+               "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({'email': this.state.email, 'password': this.state.password})
+        })
+        .then((res)=>{ 
+            if(res.status ===200){
+               return res.json();
+            }
+            else{
+                throw new Error("Id incorrect"); 
+            }
+        })
+        .then((data)=>{
+            this.successConnect(data);
 
-function change (e) {
-    if(e.target.id ==="email"){
-        email = e.target.value;
-    }
-    else if(e.target.id === "password"){
-        password = e.target.value;
-    }
-};
-*/
-
-const formConnexion = ({onSubmit,onChange})=> {
+        })
+        .catch(console.log)
+      }
     
-    return(
-    <div className="App">
-        <form id="FormConnexion" onSubmit={function(e){onSubmit(e)}}>
-        <div id="divEmail">
-            <label htmlFor="email"> Email :</label>
-            <input type="text" id="email"  onChange={onChange}/>
-        </div>
-        <div>
-            <label htmlFor="password"> Password :</label>
-            <input type="password" id="password" onChange={onChange}/>
-        </div>
-        <button type="submit" value="Connexion" >Connexion</button>
-        </form>
-    </div>
-    );
+      change = (e)=> {
+         this.setState({[e.target.id]: e.target.value});
+      }
+
+      successConnect = (data)=> {
+       this.props.handleLogin(data);
+       this.props.history.push("/useroptions");
+      }
+
+      render(props) {
+        return (
+            <div className="App">
+                <form id="FormConnexion" onSubmit={this.submitConnect}>
+                <div id="divEmail">
+                    <label htmlFor="email"> Email :</label>
+                    <input type="text" id="email"  onChange={this.change}/>
+                </div>
+                <div>
+                    <label htmlFor="password"> Password :</label>
+                    <input type="password" id="password" onChange={this.change}/>
+                </div>
+                <button type="submit" value="Connexion" >Connexion</button>
+                </form>
+            </div>
+        );
+    }
 }
-
-export default formConnexion;
-
-        //var history = useHistory();
-       // history.push('/optionsPage');
-        //return  <Redirect to='/optionsPage'  />
-        //<Route exact path="/optionsPage" />
-        //props.history.push('/optionsPage');

@@ -1,5 +1,4 @@
 import React from 'react';
-import {BrowserRouter, Route} from 'react-router-dom';
 
 function roleHandler(params) {
     if(true){
@@ -8,20 +7,18 @@ function roleHandler(params) {
     
 }
 //<roleHandler/>
-function optionsPage({user}) {
+const OptionsPage = props => {
       return(
         <div className="App">
-            <head>
-                <h1>Bonjour {user}</h1>
-            </head>
-            <div>
-                <a>mon Profil</a>
-                
-                <a>Deconnexion</a>
-            </div>
+                    
+      <h1>Bonjour {props.token!==null?props.token:'Pas de token'}</h1>
+            <h1>{props.logged?"Connecté":"Non connecté"}</h1>
+            <h4>mon Profil</h4>
+            <h5>Deconnexion</h5>
+        
         </div>
       );
   
 }
 
-export default optionsPage;
+export default OptionsPage;

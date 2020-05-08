@@ -16,7 +16,13 @@ UserHandler.prototype.InitialiseDB = ()=>{
 
 UserHandler.prototype.GetUsers = (req, res)=>{
     sqlUser.getAll(function(users){
-      res.send(JSON.stringify(users));
+
+      if(users !== undefined){
+        res.status(200).send(JSON.stringify(users));
+      }
+      else{
+        res.status(418).send({"error":"I'm a teapot"});
+      }
     });
 };
 
@@ -76,8 +82,7 @@ UserHandler.prototype.TryConect =(req, res)=>{
               }
               else{
                 tokenUser = callbackToken;
-                console.log('La creation a echoue');
-                res.status(500).send({"error":"Creation failed"});
+                res.status(418).send({"error":"I'm a teapot"});
               }
             });
           }
