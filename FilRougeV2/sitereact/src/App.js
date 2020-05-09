@@ -8,7 +8,7 @@ import {
   Route,
 } from "react-router-dom";
 import UsersArray from './Views/UsersArray';
-
+import FromAddUser from './Views/FormAddUser'
 
 export default class App extends Component{
   constructor(props){
@@ -35,7 +35,12 @@ export default class App extends Component{
             render={
               props=>( 
                 <FormConnexion {...props} handleLogin={this.handleLogin} logged={this.state.logged}/>)}
-            />:
+            />
+            <Route exact path="/add" 
+              render={
+                props=>( 
+                  <FromAddUser {...props} handleLogin={this.handleLogin} logged={this.state.logged}/>)}
+            />
             <Route exact path="/useroptions" 
             render={
               props=>(
@@ -45,7 +50,7 @@ export default class App extends Component{
               render={
                 props=>( 
                   <UsersArray {...props} />)}
-            />:
+            />
           </Switch>
           </BrowserRouter>
         </div>

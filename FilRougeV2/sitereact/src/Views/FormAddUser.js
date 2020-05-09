@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 //zeeroundeuxs.com
 //azertyx
-export default class FormConnexion extends Component{
+export default class FormAddUser extends Component{
     constructor(props){
       super(props);
       
@@ -10,13 +10,16 @@ export default class FormConnexion extends Component{
         user: null,
         token: null,
         email: "",
-        password: ""
+        password: "",
+        firstname: "",
+        lastname: "",
+        description: ""
       }
     }
 
-    submitConnect = (e) => {
+    submitAdd = (e) => {
         e.preventDefault();
-        fetch('http://localhost:9500/connection',
+        fetch('http://localhost:9500/add',
         {
             method:"POST",
             mode: "cors", 
@@ -24,18 +27,24 @@ export default class FormConnexion extends Component{
                "Accept": "application/json",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({'email': this.state.email, 'password': this.state.password})
+            body: JSON.stringify({
+                'firstname': this.state.firstname, 
+                'lastname': this.state.lastname,
+                'email': this.state.email, 
+                'password': this.state.password, 
+                'description': this.state.description
+            })
         })
         .then((res)=>{ 
             if(res.status ===200){
                return res.json();
             }
             else{
-                throw new Error("Id incorrect"); 
+                throw new Error("Can't created"); 
             }
         })
         .then((data)=>{
-            this.successConnect(data);
+            this.successAdd(data);
 
         })
         .catch(console.log)
@@ -45,19 +54,17 @@ export default class FormConnexion extends Component{
          this.setState({[e.target.id]: e.target.value});
       }
 
-      successConnect = (data)=> {
+      successAdd = (data)=> {
+
+        
        this.props.handleLogin(data);
        this.props.history.push("/useroptions");
       }
 
-      clickSub = ()=> {
-        this.props.history.push("/add");
-       }
-       
       render(props) {
         return (
             <div className="App">
-                <form id="FormConnexion" onSubmit={this.submitConnect}>
+                <form id="FormAddUser" onSubmit={this.submitAdd}>
                 <div id="divEmail">
                     <label htmlFor="email"> Email :</label>
                     <input type="text" id="email"  onChange={this.change}/>
@@ -66,10 +73,20 @@ export default class FormConnexion extends Component{
                     <label htmlFor="password"> Password :</label>
                     <input type="password" id="password" onChange={this.change}/>
                 </div>
-                <button type="submit" value="Connexion" >Connexion</button>
+                <div>
+                    <label htmlFor="firstname"> Firstname :</label>
+                    <input type="text" id="firstname" onChange={this.change}/>
+                </div>
+                <div>
+                    <label htmlFor="lastname"> Lastname :</label>
+                    <input type="text" id="lastname" onChange={this.change}/>
+                </div>
+                <div>
+                    <label htmlFor="description"> Description :</label>
+                    <input type="text" id="description" onChange={this.change}/>
+                </div>
+                <button type="submit" value="Add" >Créer</button>
                 </form>
-                <button  value="Inscription" onClick={this.clickSub}>Inscription</button>
-
             </div>
         );
     }

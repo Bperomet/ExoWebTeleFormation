@@ -27,7 +27,14 @@ app.post('/connection', function (req, res){
 });
 
 app.post('/add', function (req, res){
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Headers',  "origin");
     userHandler.AddData(req, res);
+});
+
+app.get('/delete/:id', function (req, res){
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    userHandler.DeleteUser(req, res);
 });
 
 

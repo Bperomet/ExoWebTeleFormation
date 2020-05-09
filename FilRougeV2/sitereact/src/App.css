@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  min-height: 100vh;
+
 }
 
 #FormConnexion{
@@ -7,8 +9,8 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin-top: 25%;
 
-  min-height: 100vh;
 }
 #FormConnexion div{
   margin-right: 1%;

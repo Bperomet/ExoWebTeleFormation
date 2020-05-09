@@ -98,7 +98,7 @@ function Create(user, callback){
             else {
                  
                 user.id = this.lastID;
-                callback(user);
+                callback(new userMod.User(user));
             }
           });
         }

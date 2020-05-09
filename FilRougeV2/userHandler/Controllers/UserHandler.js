@@ -31,10 +31,10 @@ UserHandler.prototype.SelectUser = (req, res)=>{
 
       sqlUser.selectId(req.params.id,function(callbackUser){
         if (callbackUser instanceof userMod.User && callbackUser.id === tokenUser.idUser) {
-          res.send(JSON.stringify(callbackUser));
+          res.status(200).send(JSON.stringify(callbackUser));
         }
         else{
-          res.send({"error":"User not found"});
+          res.status(418).send({"error":"User not found"});
         }
       });
     }
@@ -46,15 +46,35 @@ UserHandler.prototype.SelectUser = (req, res)=>{
 
 UserHandler.prototype.AddData = (req, res)=>{
    user = new userMod.User(req.body);
+   //console.log(user);
    sqlUser.add( user, function(callbackUser){
 
     if (callbackUser instanceof userMod.User) {
+      
+        sqlToken.SelectCurrentTokenUser(callbackUser,function(callbackToken){
 
-      res.send(JSON.stringify(callbackUser));    
+          if (callbackToken instanceof tokenMod.Token && new Date().getTime()<new Date(callbackToken.expiryDate).getTime()) {
+            tokenUser = callbackToken;
+
+            res.status(200).send(JSON.stringify(callbackToken));    
+          }
+          else{
+            sqlToken.Create(callbackUser,function(callbackNewToken){
+              if (callbackNewToken instanceof tokenMod.Token) {
+                tokenUser = callbackToken;
+
+                res.status(200).send(JSON.stringify(callbackNewToken));
+              }
+              else{
+                tokenUser = callbackToken;
+                res.status(418).send({"error":"I'm a teapot or not"});
+              }
+            });
+          }
+        });
     }
     else{
-      console.log('La creation a echoue');
-      res.send({"error":"Creation failed"});
+      res.status(418).send({"error":"Creation failed"});
     }
   });
 };
@@ -68,7 +88,6 @@ UserHandler.prototype.TryConect =(req, res)=>{
 
           if (callbackToken instanceof tokenMod.Token && new Date().getTime()<new Date(callbackToken.expiryDate).getTime()) {
             tokenUser = callbackToken;
-  console.log(tokenUser);
 
             res.status(200).send(JSON.stringify(callbackToken));    
           }
@@ -76,7 +95,6 @@ UserHandler.prototype.TryConect =(req, res)=>{
             sqlToken.Create(callbackUser,function(callbackNewToken){
               if (callbackNewToken instanceof tokenMod.Token) {
                 tokenUser = callbackToken;
-                console.log("new token");
 
                 res.status(200).send(JSON.stringify(callbackNewToken));
               }
@@ -99,13 +117,10 @@ UserHandler.prototype.DeleteUser = (req, res)=>{
 
     sqlUser.remove(IdValue,function(callback){
       if (callback) {
-        console.log('User supprimer');
-        res.send({"action":"User deleted"});
+        res.status(200).send({"action":"User deleted"});
       }
       else{
-        console.log('suppression impossible');
-        res.send({"error":"Deletion failed"});
-
+        res.status(418).send({"error":"I'm a teapot"});
       }
     });
 };
@@ -115,11 +130,10 @@ UserHandler.prototype.UpdateUser = (req, res)=>{
       if (callbackUser instanceof userMod.User) {
 
         console.log(callbackUser);
-        res.send(JSON.stringify(callbackUser));    
+        res.status(200).send(JSON.stringify(callbackUser));    
       }
       else{
-        console.log('impossible de faire la modification');
-        res.send({"error":"Impossible to modify"});
+        res.status(418).send({"error":"Impossible to modify"});
       }
     });
 };
