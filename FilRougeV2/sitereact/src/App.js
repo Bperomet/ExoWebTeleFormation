@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import UsersArray from './Views/UsersArray';
 import FromAddUser from './Views/FormAddUser'
+import ProfilUser from './Views/ProfilUser';
+
 
 export default class App extends Component{
   constructor(props){
@@ -50,6 +52,11 @@ export default class App extends Component{
               render={
                 props=>( 
                   <UsersArray {...props} />)}
+            />
+            <Route exact path="/users/*" 
+              render={
+                props=>( 
+                  <ProfilUser {...props} token={this.state.token}/>)}
             />
           </Switch>
           </BrowserRouter>

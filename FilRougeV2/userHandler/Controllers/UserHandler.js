@@ -27,21 +27,22 @@ UserHandler.prototype.GetUsers = (req, res)=>{
 };
 
 UserHandler.prototype.SelectUser = (req, res)=>{
-    if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
-
       sqlUser.selectId(req.params.id,function(callbackUser){
-        if (callbackUser instanceof userMod.User && callbackUser.id === tokenUser.idUser) {
+        if (callbackUser instanceof userMod.User ) {
           res.status(200).send(JSON.stringify(callbackUser));
         }
         else{
           res.status(418).send({"error":"User not found"});
         }
       });
-    }
+      //&& callbackUser.id === tokenUser.idUser
+         // if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
+
+   /* }
     else
     {
       res.send({"error":"Token not found"});
-    }
+    }*/
 };
 
 UserHandler.prototype.AddData = (req, res)=>{
@@ -112,12 +113,10 @@ UserHandler.prototype.TryConect =(req, res)=>{
     });
 };
 
-UserHandler.prototype.DeleteUser = (req, res)=>{
-    var IdValue = req.body.id;
-
-    sqlUser.remove(IdValue,function(callback){
+UserHandler.prototype.DeleteUser = (req, res)=>{    
+    sqlUser.remove(req.params.id,function(callback){
       if (callback) {
-        res.status(200).send({"action":"User deleted"});
+        res.status(200).send({"id": req.params.id});
       }
       else{
         res.status(418).send({"error":"I'm a teapot"});
@@ -126,6 +125,7 @@ UserHandler.prototype.DeleteUser = (req, res)=>{
 };
 
 UserHandler.prototype.UpdateUser = (req, res)=>{
+  user = new userMod.User(req.body);
     sqlUser.update(user,function(callbackUser){
       if (callbackUser instanceof userMod.User) {
 

@@ -48,19 +48,22 @@ function Select(user,callback){
     });
 }
 function SelectId(idValue,callback){
-    db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
-        if (err) {
-            console.log(err);
-        }
-        else{
-        }
-            if (row != null) {
-                callback(new userMod.User(row));
+    if(idValue !== '' && idValue !== undefined){
+        db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
+            if (err) {
+                console.log(err);
             }
-            else {
-                callback(null);
+            else{
             }
-    });
+                if (row != null) {
+                    callback(new userMod.User(row));
+                }
+                else {
+                    callback(null);
+                }
+        });
+    }
+    callback(null);
 }
 function SelectAll(callback){
     db.all('SELECT ID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD, DESCRIPTION, ROLE FROM userData', function (err, rows) {
@@ -123,30 +126,20 @@ function Update(user,callback){
 }
 
 function Delete(IdValue,callback){
-  if (IdValue !== '' && IdValue !== undefined) {
     
-    db.each('SELECT ID FROM userData WHERE id=? UNION ALL SELECT NULL LIMIT 1', IdValue, function (err, row) {
-        if (err) {
-        console.log(err);
-        }
-        if (row.id === null) {
-        callback(false);
-        } 
-        else {
-            
-            db.run('DELETE FROM userData WHERE id=?', IdValue, function (err) {
-                if (err) {
-                    console.log(err);
-                } 
-                else {
-                    callback(true);
-                }
-            });
-        }
-        });
+    if (IdValue !== '' && IdValue !== undefined) {
+    
+        db.run('DELETE FROM userData WHERE id=?', IdValue, function (err) {
+            if (err) {
+                console.log(err);
+            } 
+            else {
+                callback(true);
+            }
+        });   
     } 
     else {
-        console.log(err);
+        console.log("id invalide");
         callback(false);
     }
 }

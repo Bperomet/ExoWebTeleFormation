@@ -14,9 +14,6 @@ app.get('/users', function (req, res){
     userHandler.GetUsers(req, res);
 });
 
-app.get('/users/:id', function (req, res){
-    userHandler.SelectUser(req, res);
-});
 app.post('/connection', function (req, res){
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.setHeader('Access-Control-Allow-Headers',  "origin");
@@ -32,11 +29,19 @@ app.post('/add', function (req, res){
     userHandler.AddData(req, res);
 });
 
+app.get('/users/:id', function (req, res){
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    userHandler.SelectUser(req, res);
+});
+
 app.get('/delete/:id', function (req, res){
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     userHandler.DeleteUser(req, res);
 });
-
+app.get('/update/:id', function (req, res){
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    userHandler.UpdateUser(req, res);
+});
 
 app.set('port',9500);
 console.log('Le serveur ecoute sur le port ',app.get('port'));
