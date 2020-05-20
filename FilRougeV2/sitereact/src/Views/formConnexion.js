@@ -47,6 +47,7 @@ export default class FormConnexion extends Component{
 
       successConnect = (data)=> {
        this.props.handleLogin(data);
+       this.props.getUser(data.idUser);
        this.props.history.push("/useroptions");
       }
 

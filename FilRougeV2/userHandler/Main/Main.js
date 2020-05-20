@@ -30,7 +30,6 @@ app.post('/add', function (req, res){
 });
 
 app.get('/users/:id', function (req, res){
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     userHandler.SelectUser(req, res);
 });
 
@@ -38,8 +37,9 @@ app.get('/delete/:id', function (req, res){
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     userHandler.DeleteUser(req, res);
 });
-app.get('/update/:id', function (req, res){
+app.post('/update/:id', function (req, res){
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Headers',  "origin");    
     userHandler.UpdateUser(req, res);
 });
 

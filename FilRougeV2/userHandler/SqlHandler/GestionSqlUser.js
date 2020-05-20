@@ -48,22 +48,19 @@ function Select(user,callback){
     });
 }
 function SelectId(idValue,callback){
-    if(idValue !== '' && idValue !== undefined){
-        db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
-            if (err) {
-                console.log(err);
+    db.get('SELECT * From userData WHERE id=?', idValue , function (err, row) {
+        if (err) {
+            console.log(err);
+        }
+        else{
+        }
+            if (row != null) {
+                callback(new userMod.User(row));
             }
-            else{
+            else {
+                callback(null);
             }
-                if (row != null) {
-                    callback(new userMod.User(row));
-                }
-                else {
-                    callback(null);
-                }
-        });
-    }
-    callback(null);
+    });
 }
 function SelectAll(callback){
     db.all('SELECT ID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD, DESCRIPTION, ROLE FROM userData', function (err, rows) {
@@ -120,7 +117,7 @@ function Update(user,callback){
             callback(null);
         } 
         else {
-            callback(user);
+            callback(new userMod.User(user));
         }
     });
 }

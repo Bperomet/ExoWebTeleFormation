@@ -27,22 +27,22 @@ UserHandler.prototype.GetUsers = (req, res)=>{
 };
 
 UserHandler.prototype.SelectUser = (req, res)=>{
+ //   if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
+   // && callbackUser.id === tokenUser.idUser
       sqlUser.selectId(req.params.id,function(callbackUser){
-        if (callbackUser instanceof userMod.User ) {
-          res.status(200).send(JSON.stringify(callbackUser));
+
+        if (callbackUser !== null) {
+          res.status(200).json(callbackUser);  
         }
         else{
-          res.status(418).send({"error":"User not found"});
+          res.status(418).json({"error":"I'm a teapot or not"});
         }
       });
-      //&& callbackUser.id === tokenUser.idUser
-         // if(tokenUser instanceof tokenMod.Token && tokenUser.token != null){
-
-   /* }
-    else
-    {
-      res.send({"error":"Token not found"});
-    }*/
+ //   }
+  //  else
+  //  {
+   //   res.send({"error":"Token not found"});
+   // }
 };
 
 UserHandler.prototype.AddData = (req, res)=>{
@@ -126,7 +126,9 @@ UserHandler.prototype.DeleteUser = (req, res)=>{
 
 UserHandler.prototype.UpdateUser = (req, res)=>{
   user = new userMod.User(req.body);
+
     sqlUser.update(user,function(callbackUser){
+
       if (callbackUser instanceof userMod.User) {
 
         console.log(callbackUser);

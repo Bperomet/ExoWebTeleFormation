@@ -13,7 +13,9 @@ export default class UsersArray extends Component{
     }
 
     clickModify = (e)=>{
-        fetch('http://localhost:9500/users/'+e.target.id,
+
+        this.props.history.push("/users/"+e.target.id);
+        /*fetch('http://localhost:9500/users/'+e.target.id,
         {
             method:"GET",
             mode: "cors", 
@@ -29,9 +31,8 @@ export default class UsersArray extends Component{
         .then((data)=>{
             
             this.setState({user: data});
-            console.log(this.state.user)
         })
-        .catch(console.log)
+        .catch(console.log)*/
     }
 
     clickDelete = (e)=>{
@@ -49,7 +50,7 @@ export default class UsersArray extends Component{
             }
         })
         .then((data)=>{
-            var array = this.state.users.filter(item => item.id != data.id);
+            var array = this.state.users.filter(item => item.id !== data.id);
             this.setState({users: array});
         })
         .catch(console.log)
@@ -134,8 +135,8 @@ export default class UsersArray extends Component{
                 </tbody>
             </table>
             : this.state.user !== null?
-               console.log(this.state.user)
-                
+            props=>(
+                <ProfilUser {...props} user={this.state.user} submitUpdate={this.submitUpdate()}/>)
             :
                 <h5>Chargement...</h5>
             }
