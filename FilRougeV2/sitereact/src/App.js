@@ -13,18 +13,7 @@ import ProfilUser from './Views/ProfilUser';
 import { createStore } from 'redux'
 
 
-function counter(state = 0, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
-    default:
-      return state
-  }
-}
-
-let store = createStore(counter)
+//let store = createStore(counter)
 
 
 export default class App extends Component{
@@ -39,11 +28,6 @@ export default class App extends Component{
     //setState est insincrone
   }
 
-  swapMyProfil =()=>{
-    this.props.history.push("/Views/FormConnexion");
-
-  }
-
   handleUser = (data)=> {
     this.setState({user: data})
     console.log(this.state.user);
@@ -53,6 +37,10 @@ export default class App extends Component{
   handleLogin = (data)=> {
     this.setState({logged: true, token: data})
     console.log(this.state.token);
+  }
+
+  loginLogout = ()=> {
+    this.setState({logged: false});
   }
 // user: this.getUser(this.state.token.idUser)
   getUser = (idToken)=>{
@@ -80,33 +68,40 @@ export default class App extends Component{
     return (   
         <div className="App">
           <BrowserRouter>
+            {
+            this.state.logged === false? 
             <Switch>
-              <Route exact path="/" 
+              <Route  path="/" 
               render={
                 props=>( 
-                  <FormConnexion {...props} handleLogin={this.handleLogin} getUser={this.getUser} logged={this.state.logged}/>)}
+                  <FormConnexion {...props} handleLogin={this.handleLogin} getUser={this.getUser}/>)}
               />
               <Route exact path="/add" 
                 render={
                   props=>( 
-                    <FromAddUser {...props} handleLogin={this.handleLogin} logged={this.state.logged}/>)}
-              />
-              <Route exact path="/useroptions" 
-                render={
-                  props=>(
-                    <OptionsPage  {...props} token={this.state.token} logged={this.state.logged} swapMyProfil={this.swapMyProfil}/>)}
-              />
-              <Route exact path="/users" 
-                render={
-                  props=>( 
-                    <UsersArray {...props} />)}
-              />
-              <Route exact path="/users/:id" 
-                render={
-                  props=>( 
-                    <ProfilUser {...props} user={this.state.user} token={this.state.token}/>)}
-              />
+                    <FromAddUser {...props} handleLogin={this.handleLogin} loginLogout={this.loginLogout} logged={this.state.logged}/>)}
+              />   
             </Switch>
+
+            :
+            <Switch>
+                <Route exact path="/useroptions" 
+                  render={
+                    props=>(
+                      <OptionsPage  {...props} token={this.state.token} loginLogout={this.loginLogout} logged={this.state.logged} />)}
+                />
+                <Route exact path="/users" 
+                  render={
+                    props=>( 
+                      <UsersArray {...props} user={this.state.user} loginLogout={this.loginLogout}/>)}
+                />
+                <Route exact path="/users/:id" 
+                  render={
+                    props=>( 
+                      <ProfilUser {...props} user={this.state.user} loginLogout={this.loginLogout} token={this.state.token}/>)}
+                />
+            </Switch>
+            } 
           </BrowserRouter>
         </div>
     );

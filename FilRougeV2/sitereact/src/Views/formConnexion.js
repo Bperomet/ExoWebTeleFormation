@@ -55,7 +55,7 @@ export default class FormConnexion extends Component{
         this.props.history.push("/add");
        }
        
-      render(props) {
+      render() {
         return (
             <div className="App">
                 <form id="FormConnexion" onSubmit={this.submitConnect}>

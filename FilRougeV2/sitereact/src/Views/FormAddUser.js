@@ -61,7 +61,11 @@ export default class FormAddUser extends Component{
        this.props.history.push("/useroptions");
       }
 
-      render(props) {
+      backConnexion =()=>{
+        this.props.history.push("/");
+      }
+
+      render() {
         return (
             <div className="App">
                 <form id="FormAddUser" onSubmit={this.submitAdd}>
@@ -87,6 +91,7 @@ export default class FormAddUser extends Component{
                 </div>
                 <button type="submit" value="Add" >Créer</button>
                 </form>
+                <button onClick={this.backConnexion} >Retour</button>
             </div>
         );
     }

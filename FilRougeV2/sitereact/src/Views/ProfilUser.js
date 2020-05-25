@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import NavigatorBar from './NavigatorBar';
 
 export default class ProfilUser extends Component{
 
@@ -7,15 +8,15 @@ export default class ProfilUser extends Component{
     
         this.state ={
           user: null,
- 
         }
     }
 
+    loginLogout =()=>{
+        this.props.loginLogout();
+        this.props.history.push("/");
+    }
+
     componentDidMount(){
-        if(this.props.user !== null){
-           this.setState({user: this.props.user})
-        }
-        else{
             fetch('http://localhost:9500/users/'+this.props.match.params.id,
             {
                 method:"GET",
@@ -34,42 +35,46 @@ export default class ProfilUser extends Component{
                 this.setState({user: data});
             })
             .catch(console.log)
-        }
+     //   }
     }
 
     submitUpdate = (e) =>{ 
         e.preventDefault();
-        fetch('http://localhost:9500/update/'+this.props.match.params.id,
-        {
-            method:"POST",
-            mode: "cors", 
-            headers: {
-               "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-                {
-                    'id': this.state.user.id,
-                    'email': this.state.user.email, 
-                    'firstname': this.state.user.firstname,
-                    'lastname': this.state.user.lastname,
-                    'password': this.state.user.password,
-                    'description': this.state.user.description,
+        if(this.state.user !== null){
+            fetch('http://localhost:9500/update/'+this.props.match.params.id,
+            {
+                method:"POST",
+                mode: "cors", 
+                headers: {
+                   "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                    {
+                        'id': this.state.user.id,
+                        'email': this.state.user.email, 
+                        'firstname': this.state.user.firstname,
+                        'lastname': this.state.user.lastname,
+                        'password': this.state.user.password,
+                        'description': this.state.user.description,
+                    }
+                ) 
+            })
+            .then((res)=>{ 
+                if(res.status ===200){
+                return res.json();
                 }
-            ) 
-        })
-        .then((res)=>{ 
-            if(res.status ===200){
-            return res.json();
-            }
-            else{
-                throw new Error("Impossible de modifier la provenance des grains de cafés"); 
-            }
-        })
-        .then((data)=>{
-            this.setState({user: data});
-        })
-        .catch(console.log)
+                else{
+                    throw new Error("Impossible de modifier la provenance des grains de cafés"); 
+                }
+            })
+            .then((data)=>{
+                this.setState({user: data});
+                this.props.history.push("/useroptions");
+            })
+            .catch(console.log)
+        }
+
     }
 
 
@@ -88,7 +93,9 @@ export default class ProfilUser extends Component{
     //console.log(props.user)
         return(
         <div className="App">
-            {this.state.user!==null?              
+            <NavigatorBar loginLogout={this.loginLogout}/>       
+
+            {this.state.user!==null?
                 <form id="FormAddUser" onSubmit={this.submitUpdate}>
                     <div>
                         <label htmlFor="email"> Email :</label>
@@ -116,7 +123,7 @@ export default class ProfilUser extends Component{
             :
                 
                 <p>Utilisateur introuvable</p>}
-            <button value="return" >Retour</button>
+            <button onClick={() => this.props.history.push('/useroptions')} value="return" >Retour</button>
 
         </div>
         );

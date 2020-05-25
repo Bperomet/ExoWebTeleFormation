@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import ProfilUser from './ProfilUser';
+import NavigatorBar from './NavigatorBar';
 
 export default class UsersArray extends Component{
 
@@ -12,10 +13,15 @@ export default class UsersArray extends Component{
         }
     }
 
+    loginLogout =()=>{
+        this.props.loginLogout();
+        this.props.history.push("/");
+    }
+
     clickModify = (e)=>{
 
-        this.props.history.push("/users/"+e.target.id);
-        /*fetch('http://localhost:9500/users/'+e.target.id,
+        //this.props.history.push("/users/"+e.target.id);
+        fetch('http://localhost:9500/users/'+e.target.id,
         {
             method:"GET",
             mode: "cors", 
@@ -29,10 +35,10 @@ export default class UsersArray extends Component{
             }
         })
         .then((data)=>{
-            
-            this.setState({user: data});
+            console.log(data);
+            this.setState({user: data},()=>this.props.history.push("/users/"+data.id));
         })
-        .catch(console.log)*/
+        .catch(console.log)
     }
 
     clickDelete = (e)=>{
@@ -42,6 +48,7 @@ export default class UsersArray extends Component{
             mode: "cors", 
         })
         .then((res)=>{ 
+            console.log(res.status);
             if(res.status ===200){
                 return res.json();
             }
@@ -50,8 +57,8 @@ export default class UsersArray extends Component{
             }
         })
         .then((data)=>{
-            var array = this.state.users.filter(item => item.id !== data.id);
-            this.setState({users: array});
+            var array = this.state.users.filter(item => item.id != data.id);
+            this.setState({users: array},()=>console.log(this.state.users)); 
         })
         .catch(console.log)
     }
@@ -106,9 +113,10 @@ export default class UsersArray extends Component{
     render() {
 
       return(
-       
-        //console.log(i)
-        <div>{this.state.users.length > 0 && this.state.user === null? 
+
+        <div>
+            <NavigatorBar loginLogout={this.loginLogout}/>       
+            {this.state.users.length > 0 && this.state.user === null? 
             <table>
                 <thead key="thead">
                     <tr> 
@@ -134,10 +142,7 @@ export default class UsersArray extends Component{
                         )}
                 </tbody>
             </table>
-            : this.state.user !== null?
-            props=>(
-                <ProfilUser {...props} user={this.state.user} submitUpdate={this.submitUpdate()}/>)
-            :
+            : 
                 <h5>Chargement...</h5>
             }
         </div>
