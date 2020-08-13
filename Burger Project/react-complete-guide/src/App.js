@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import './App.css';
+//import './App.css';
+
+import classes from './App.css';
 //import Radium, {StyleRoot} from 'radium';
 //import styled from 'styled-components';
-import Person from './Person/Person';
+
+import Persons from './Components/Persons/Persons';
+import Cockpit from './Components/Persons/Cockpit/Cockpit';
+import WithClass from './hoc/WithClass';
 
 //${} pour inserer dynamiquement en js
 /*const StyledButton = styled.button`
@@ -21,13 +26,22 @@ import Person from './Person/Person';
 
 class App extends Component {
 
+  constructor(props){
+    super(props);
+  }
+
   state = {
     persons:[
       {id:1, name:"Max", age:"27"},
       {id:2, name:"Boby", age:"30"},
       {id:3, name:"betty", age:"45"},
     ],
-    showPersons: false
+    showPersons: false,
+    changecounter: 0,
+  }
+
+  static getDerivedStateFromProps(props,state){
+    return state;
   }
 
   deletePersonHandler = (personIndex) => {
@@ -47,7 +61,11 @@ class App extends Component {
     const persons = [...this.state.persons];
     persons[personIndex] = person;
 
-    this.setState({persons: persons});
+    //maj d'etat dependant de l'ancien état
+    this.setState((prevState,props)=>{
+      return  {persons: persons, changecounter: this.state.changecounter+1}
+    }
+    );
   }
 
   togglePersonsHandler = () => {
@@ -73,19 +91,11 @@ class App extends Component {
 
     if(this.state.showPersons){
       persons = (     
-      <div>
-        {
-          this.state.persons.map((person, index)=>{
-            return <Person 
-            name={person.name} 
-            age={person.age} 
-            key={person.id} 
-            click={()=>this.deletePersonHandler(index)} 
-            changed={(event)=> this.nameChangedHandler(event,person.id)}
-            />
-          })
-        }
-      </div>
+        <Persons 
+        persons={this.state.persons} 
+        clicked={this.deletePersonHandler}
+        changed={this.nameChangedHandler}
+        />
       );
      /* style.backgroundColor = 'red';
       style[':hover']={
@@ -95,23 +105,13 @@ class App extends Component {
     }
 
     //  classes = ['red','bold'].join['  '];
-
-    const classes = [];
-
-    if(this.state.persons.length <= 2){
-      classes.push('red');
-    }
-    if(this.state.persons.length <= 1){
-      classes.push('bold');
-    }
-
     return (
-      
-        <div className="App">
-            <p className={classes.join('  ')}>Welcome to React</p>
-            <button /*style={style}*/alt={this.state.showPersons} onClick = {this.togglePersonsHandler}>toggle Persons</button>
+      //title={this.props.title} this pour recupe le props d'une classe
+        <WithClass classes={classes.App}>
+          
+            <Cockpit title={this.props.title} showPersons={this.state.showPersons} personsLenght={this.state.persons.length} clicked={this.togglePersonsHandler}/>
             {persons}
-        </div>
+        </WithClass>
       
     );
   }
