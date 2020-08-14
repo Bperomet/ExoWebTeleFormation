@@ -1,9 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import classes from './Cockpit.css';
+import AuthContext from '../../../Context/auth-context';
 
 const cockpit = (props)=>{
 
-    useEffect(()=>{},props.persons);//pour executer la fonction a chaque cycle de vie du composent
+   // const toggleBtnRef = useRef(null);
+
+    useEffect(()=>{/*toggleBtnRef.current.click()*/},props.persons);//pour executer la fonction a chaque cycle de vie du composent apres le render
 
     const assignedclasses = [];
     //let btnClass =[classes.Button];
@@ -25,11 +28,16 @@ const cockpit = (props)=>{
         <div className={classes.cockpit}>
             <h1>{props.title}</h1>
             <p className={assignedclasses.join('  ')}>Welcome to React</p>
-            <button /*style={style}*/ 
+            <button
+           // ref={toggleBtnRef}
+             /*style={style}*/ 
             //className={btnClass.join('  ')} 
             //alt={this.state.showPersons} 
             onClick = {props.clicked}>toggle Persons
             </button>
+            <AuthContext.Consumer>
+              {(context)=>{<button onClick={context.login}>log in</button>}}
+            </AuthContext.Consumer>
         </div>
     );
 };

@@ -9,6 +9,7 @@ import Persons from './Components/Persons/Persons';
 import Cockpit from './Components/Persons/Cockpit/Cockpit';
 import WithClass from './hoc/WithClass';
 
+import AuthContext from './Context/auth-context';
 //${} pour inserer dynamiquement en js
 /*const StyledButton = styled.button`
   background-color: ${props => props.alt ? 'red': 'green'}; 
@@ -38,6 +39,7 @@ class App extends Component {
     ],
     showPersons: false,
     changecounter: 0,
+    authenticated: false,
   }
 
   static getDerivedStateFromProps(props,state){
@@ -72,6 +74,9 @@ class App extends Component {
     this.setState({showPersons: !this.state.showPersons});
   }
 
+  loginHandler=()=>{
+    this.setState({authenticated: true});
+  }
   render() {
     
     /* const style = {
@@ -108,9 +113,17 @@ class App extends Component {
     return (
       //title={this.props.title} this pour recupe le props d'une classe
         <WithClass classes={classes.App}>
-          
-            <Cockpit title={this.props.title} showPersons={this.state.showPersons} personsLenght={this.state.persons.length} clicked={this.togglePersonsHandler}/>
+          <AuthContext.Provider value={{
+            authenticated: this.state.authenticated, 
+            login: this.loginHandler}}>
+            <Cockpit 
+            title={this.props.title} 
+            login={this.loginHandler} 
+            showPersons={this.state.showPersons} 
+            personsLenght={this.state.persons.length} 
+            clicked={this.togglePersonsHandler}/>
             {persons}
+          </AuthContext.Provider>
         </WithClass>
       
     );

@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import './Person.css';
 import Auxiliary from '../../../hoc/Auxiliary';
 // props.children mot reservé pour recuperer entre les 2 balises
+import AuthContext from '../../../Context/auth-context';
 
 
 const StyledDiv = styled.div`
@@ -43,8 +44,13 @@ class Person extends Component{
         return (
           //  <div className='Person' style={style}>
          // <Auxiliary>  PAREIL que le FRAGMENT
+
         <React.Fragment>
             <StyledDiv>
+                <AuthContext.Consumer>
+                    {(context)=>{context.authenticated?<p>authenticated</p>:<p>not authenticated</p>}}
+                </AuthContext.Consumer>
+
                 <h1 onClick={this.props.click}>My name is { this.props.name }, i'm { this.props.age } </h1>
                 <p>{ this.props.children }</p>
                 <input 
@@ -54,6 +60,7 @@ class Person extends Component{
                 onChange={this.props.changed}/>
             </StyledDiv>
         </React.Fragment>
+
            // </Auxiliary>
          //   </div>
         )
