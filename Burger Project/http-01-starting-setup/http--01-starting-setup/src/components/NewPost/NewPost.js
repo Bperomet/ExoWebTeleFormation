@@ -1,17 +1,49 @@
 import React, { Component } from 'react';
-
 import './NewPost.css';
+import axios from '../../axios';
+import {Redirect} from 'react-router-dom';
 
 class NewPost extends Component {
     state = {
         title: '',
         content: '',
-        author: 'Max'
+        author: 'Max',
+        submitted: false
+    }
+    //secu authentification
+    componentDidMount(){
+        /*if(!this.props.auth)
+            this.props.history.replace("/");
+        */
+    }
+     
+    postDataHandler = () =>{
+        const post = {
+           title: this.state.title,
+           content: this.state.content,
+           author: this.state.author
+        };
+        axios.post('/posts',post)
+        .then(response=>{
+            console.log(response);
+            //push rajoute une feuille donc undo possible
+            //this.props.history.push("/1");
+
+            //replace pour avoir un undo impossible
+            this.props.history.replace("/1");
+
+            //this.setState({submitted: true});
+        });
     }
 
     render () {
+        let redirect = null;
+        if(this.state.submitted){
+            redirect = <Redirect to="/1"/>;
+        }
         return (
             <div className="NewPost">
+                {redirect}
                 <h1>Add a Post</h1>
                 <label>Title</label>
                 <input type="text" value={this.state.title} onChange={(event) => this.setState({title: event.target.value})} />
@@ -22,7 +54,7 @@ class NewPost extends Component {
                     <option value="Max">Max</option>
                     <option value="Manu">Manu</option>
                 </select>
-                <button>Add Post</button>
+                <button  onClick={this.postDataHandler}>Add Post</button>
             </div>
         );
     }
