@@ -1,4 +1,6 @@
 import React,{Component} from 'react';
+import {connect} from 'react-redux';
+
 import Button from '../../components/UI/Button/Button'
 import classes from './ContactData.module.css';
 import axios from '../../axios-orders';
@@ -76,6 +78,9 @@ class ContactData extends Component{
                             {value: 'cheapest', displayValue: 'Cheapest'}
                         ]
                     },
+                    validation: {
+                        required: true
+                    },
                     value: 'cheapest'
                 }
                 
@@ -93,7 +98,7 @@ class ContactData extends Component{
         }
 
         const order ={
-            ingredients: this.props.ingredients,
+            ingredients: this.props.ingrs,
             //recalculer le prix sur le serveur
             price: this.props.price,
             orderData: formData
@@ -172,5 +177,10 @@ class ContactData extends Component{
         </div>);
     }
 }
-
-export default ContactData;
+const mapStateToProps = state => {
+    return {
+        ingrs: state.ingredients,
+        price : state.totalPrice
+    };
+}
+export default connect(mapStateToProps)(ContactData);
