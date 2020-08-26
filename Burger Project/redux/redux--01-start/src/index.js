@@ -1,8 +1,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {createStore, combineReducers} from 'redux'; // lancer redux au démarrage de l'application
+import {createStore, combineReducers, applyMiddleware} from 'redux'; // lancer redux au démarrage de l'application
 import {Provider} from 'react-redux';
+import thunk from 'redux-thunk';
+
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -15,9 +17,20 @@ const rootReducer = combineReducers({
     ctr: counterReducer,
     res: resultReducer
 });
+//middleware pour enclencher des actions avant le reducer
+const logger = store =>{
+    return next =>{
+        return action =>{
+            console.log('[Middleware] dispatching ', action);
+            const result = next(action);
+            console.log('[Middleware] next state ', store.getState());
+            return result;
+        }
+    }
+};
 
 //const store = createStore(reducer);
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger,thunk));
 
 //provider avec le store pour connecter redux avec l'appli react
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));

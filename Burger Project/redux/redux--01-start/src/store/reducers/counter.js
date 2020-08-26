@@ -1,4 +1,5 @@
-import * as actionTypes from '../actions';
+import * as actionTypes from '../actions/actions';
+import {updateObject} from '../utility'
 
 const initialState ={
     counter: 0
@@ -24,10 +25,8 @@ const reducer = (state = initialState,action)=>{
         };
     }
     if(action.type === actionTypes.SUBSTRACT){
-        return {
-            ...state,
-            counter: state.counter - action.val
-        };
+        //autre methode
+        return updateObject(state, {counter: state.counter - action.val})
     }
     return state;
 };
