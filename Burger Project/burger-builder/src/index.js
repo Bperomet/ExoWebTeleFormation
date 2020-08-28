@@ -2,14 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware, combineReducers} from 'redux'; //applyMiddleware pour > redux-thunk
+import thunk from 'redux-thunk';//pour de l'asynchron
 
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import reducer from './Store/reducer';
+import burgerBuilderReducer from './Store/reducer/burgerBuilder';
+import orderReducer from './Store/reducer/order';
+import authReducer from './Store/reducer/auth';
 
-const store = createStore(reducer);
+
+const rootReducer = combineReducers({
+  burgerBuilder: burgerBuilderReducer,
+  order: orderReducer,
+  auth: authReducer
+});//Pour fusionner les reducers
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const app= (
   <Provider store={store}>

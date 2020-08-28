@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+
 import Aux from '../../hoc/Aux'
 import Toolbar from '../Navigation/Toolbar/Toolbar';
 import classes from './Layout.module.css' //Evite d'utiliser la commande npm eject
@@ -23,8 +25,9 @@ class Layout extends Component{
     render(){
         return(
             <Aux>
-                <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler}/>
+                <Toolbar drawerToggleClicked={this.sideDrawerToggleHandler} isAuthentificated={this.props.isAuthentificated}/>
                 <SideDrawer 
+                    isAuth={this.props.isAuthentificated}
                     open={this.state.showSideDrawer} 
                     closed={this.sideDrawerClosedHandler}/>
                 <main className={classes.Content}>
@@ -33,7 +36,18 @@ class Layout extends Component{
             </Aux>
         );
     }
-
 } 
 
-export default Layout;
+const mapStateToProps = state => {
+    return {
+        isAuthentificated : state.auth.token !== null
+    };
+}
+/*
+const mapDispatchToProps = dispatch =>{
+    return {
+        onOrderBurger: (orderData, token)=> dispatch(actions.purchaseBurger(orderData, token)),
+    };
+}
+*/
+export default connect(mapStateToProps)(Layout);
