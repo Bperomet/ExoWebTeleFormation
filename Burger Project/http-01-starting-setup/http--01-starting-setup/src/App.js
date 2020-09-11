@@ -4,7 +4,7 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import Blog from './containers/Blog/Blog';
 
 //Lazy loading version rect 16.6 
-const Posts = React.lazy(()=>import('./containers/Blog/Posts/Posts'));
+const Posts = React.lazy(()=>{return import('./containers/Blog/Posts/Posts')});
 
 class App extends Component {
 
